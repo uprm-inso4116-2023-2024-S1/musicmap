@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Spotify Playback</title>
+</head>
+
+<body>
+    <img id="cover-art" src="<%= data.cover_art %>" alt="Song Cover Art">
+    <p id="song-info"><%= data.artist_name %> - <%= data.track_name %></p>
+    <p id="track-time"><%= data.time %></p>
+    <p id="extra"></p>
+
+
+
+    <script>
+        // Periodically fetch and update currently playing track data
+        setInterval(function () {
+            fetch('/currPlay')
+
+                .then(response => {
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('cover-art').src = data.cover_art;
+                    document.getElementById('song-info').textContent = data.artist_name + ' - ' + data.track_name;
+                    document.getElementById('track-time').textContent = data.time;
+
+                    console.log(data.time);
+                })
+                .catch(error => console.error(error));
+        }, 10); // Update every 0.01 secs
+    </script>
+</body>
+
+</html>
