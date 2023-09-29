@@ -18,7 +18,7 @@ const token_middleware = (req, res, next) => {
 
     // check if cookie is expired
     if(currentTime > cookie.expiration_time) {
-        console.log('Cookie expired');
+        console.log('Token expired');
         return res.redirect('/auth/refresh_token');
     }
     next();

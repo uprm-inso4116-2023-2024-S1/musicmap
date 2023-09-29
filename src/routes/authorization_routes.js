@@ -81,7 +81,6 @@ router.get('/redirect', async function (req, res) {
                 };
 
                 res.cookie('music_map', JSON.stringify(cookie), {secure: false, httpOnly: true});
-                console.log("Cookie set")
                 res.redirect('/');
             }
             // if the response is no good, we just send whatever the response is
@@ -101,7 +100,7 @@ router.get('/redirect', async function (req, res) {
 // https://developer.spotify.com/documentation/web-api/tutorials/code-flow
 router.get('/refresh_token', async (req, res) => {
 
-    console.log('Cookie expired. Changing tokens.');
+    console.log('Changing tokens...');
 
     const cookie = JSON.parse(req.cookies.music_map);
     const url = 'https://accounts.spotify.com/api/token';
