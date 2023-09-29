@@ -11,20 +11,16 @@ const { getCurrentlyPlaying } = require('./functions/spotify_functions');
 // auth middleware to manage tokens
 const token_middleware = (req, res, next) => {
     // check if cookie exists
-    if(!req.cookies.music_map) return res.redirect('/login');
+    if(!req.cookies.music_map) return res.redirect('/auth/login');
 
     const cookie = JSON.parse(req.cookies.music_map);
     const currentTime = new Date().getTime();
 
     // check if cookie is expired
-    console.log(cookie.expiration_time - currentTime)
     if(currentTime > cookie.expiration_time) {
-        console.log('Cookie did expire');
-        return res.redirect('/login/refresh_token');
+        console.log('Cookie expired');
+        return res.redirect('/auth/refresh_token');
     }
-
-    console.log('Cookie did not expire');
-
     next();
 };
 

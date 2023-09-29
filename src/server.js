@@ -11,11 +11,11 @@ app.set('view engine', 'ejs');
 const PORT = 5000;
 
 const authRouter = require('./routes/auth_router');
-const loginRouter = require('./routes/authorization_routes');
+const loginRoutes = require('./routes/authorization_routes');
 
 
 app.use(cookieParser());
-app.use('/login', loginRouter);
+app.use('/auth', loginRoutes);
 app.use('/', authRouter);
 
 

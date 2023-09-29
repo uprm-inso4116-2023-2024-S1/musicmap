@@ -21,8 +21,7 @@ const scope = "user-library-read user-top-read user-read-currently-playing"
 
 //Reference: `Request User Authorization`
 // https://developer.spotify.com/documentation/web-api/tutorials/code-flow
-router.get('/', async function (req, res) {
-
+router.get('/login', async function (req, res) {
     var state = generateRandomString(16);
     // your application requests authorization
     res.redirect('https://accounts.spotify.com/authorize?' +
