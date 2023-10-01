@@ -120,12 +120,74 @@ async function getCurrentlyPlaying(access_token) {
             }
         }
         return data
-    return null;
+}
+
+/**
+ *  This method acquires the Top 5 artists from a user in a `short_term`
+ *  time range. This time range can be `long_term` or `medium_term` as well.
+ * 
+ *  I've gone with `short_term` since it provides accurate results for the 
+ *  user's top artists in the past month or so. Meaning that we should be 
+ *  updating this data at least monthly to provide better results
+ * 
+ * 
+ * @returns {topArtists} - This is a dictionary that follows the format of
+ *                         {artist_name : artist_id} it includes the Top 5
+ *                         artists from a user.
+ * 
+ *  Reference: https://developer.spotify.com/documentation/web-api/reference/get-users-top-artists-and-tracks
+ */
+async function getTopArtists(access_token){
+    const ENDPOINT = 'v1/me/top/artists?time_range=short_term&limit=5';
+    const result = await fetchWebApi(ENDPOINT, 'GET', access_token)
+    
+    const topArtists = {};
+    for (index in result.items){
+        var artist_name = result.items[index].name;
+        var artist_id = result.items[index].id;
+
+        // Here we add the artists to the Dict and
+        // assign their ID to their name!
+        topArtists[artist_name] = artist_id;
+    }
+    return topArtists;
+}
+
+/**
+ * This method gets your last played song. This might be used as a
+ * safety for when there is no currently playing music, then we would
+ * display the last played track for a user.
+ *  
+ * @returns {data} - This is a dictionary containing the following:
+ *                          artist_name
+ *                          track_name
+ *                          album_name
+ *                          cover_art
+ * 
+ *                    If we identify that the song is a local file, then
+ *                    we'd have to modify the `cover_art` attribute.
+ * 
+ * Reference : https://developer.spotify.com/documentation/web-api/reference/get-recently-played
+ */
+async function getLastPlayed(access_token) {
+    const ENDPOINT = 'v1/me/player/recently-played?limit=1';
+    const result = await fetchWebApi(ENDPOINT, 'GET', access_token)
+
+    var data = {
+        artist_name : result.items[0].track.album.artists[0].name,
+        track_name : result.items[0].track.name,
+        album_name : result.items[0].track.album.name,
+        cover_art : result.items[0].track.album.images[0].url
+    }
+
+    return data
 }
 
 
 
 module.exports = {
     getCurrentlyPlaying,
+    getTopArtists,
+    getLastPlayed,
     generateRandomString
 }
