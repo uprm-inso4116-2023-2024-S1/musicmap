@@ -4,20 +4,27 @@ const querystring = require('querystring');
 const axios = require('axios');
 require('dotenv').config()
 
+
 // functions
-const { getCurrentlyPlaying } = require('./functions/spotify_functions');
+const { getCurrentlyPlaying,
+    getLastPlayed,
+    getTopArtists,
+    getUserID,
+    createOrUpdateUser
+
+} = require('./functions/spotify_functions');
 
 
 // auth middleware to manage tokens
 const token_middleware = (req, res, next) => {
     // check if cookie exists
-    if(!req.cookies.music_map) return res.redirect('/auth/login');
+    if (!req.cookies.music_map) return res.redirect('/auth/login');
 
     const cookie = JSON.parse(req.cookies.music_map);
     const currentTime = new Date().getTime();
 
     // check if cookie is expired
-    if(currentTime > cookie.expiration_time) {
+    if (currentTime > cookie.expiration_time) {
         console.log('Token expired');
         return res.redirect('/auth/refresh_token');
     }
@@ -48,13 +55,22 @@ router.get('/', (req, res) => {
  *                  which would cause for us to not have
  *                  an access token.
  * 
+ *           Update:
+ *                 `/currPlay` now also saves the acquired
+ *                  information to the current user. By 
+ *                  calling the `createOrUpdateUser()`
+ *                  method, it passes the acquired data
+ *                  which is then saved to the curr user
+ *                  and then saved to the Users Collection.
  */
 router.get('/currPlay', async function (req, res) {
 
     const cookie = JSON.parse(req.cookies.music_map);
 
     if (cookie.access_token) {
+        var user_id = await getUserID(cookie.access_token)
         var data = await getCurrentlyPlaying(cookie.access_token);
+        createOrUpdateUser(user_id, data, null, null);
         res.json(data)
     }
     else {

@@ -1,6 +1,14 @@
 const { response } = require('express');
 const fetch = require('node-fetch')
-// ------------------------------- FUNCTIONS -------------------------------
+require('dotenv').config()
+
+// Setting up mongoDB and our userModel
+const uri = process.env.DB_URI;
+const mongoose = require('mongoose')
+mongoose.connect(uri)
+const user = require('../userSchema')
+
+
 /**
  * Generates a random string containing numbers and letters
  * for the state variable to use in our calls
@@ -61,65 +69,54 @@ async function fetchWebApi(endpoint, method, access_token, body) {
  *              
  *                   However, if we detect that we haven't retrieved an access
  *                   token then we simply return null.
+ * 
+ * NOTE : When there is nothing playing, we receive "EMPTY_RESPONSE"
  */
 async function getCurrentlyPlaying(access_token) {
 
+    /**
+     * We do a `try and catch` because of the nature of this
+     * code and SpotifyAPI. As of now, it seems that the `await`
+     * call is not enough for the API to send a complete response.
+     * 
+     * For such reason, we must allow for error handling in these
+     * occassions. Perhaps this can be fixed, but I don't see it as
+     * a huge problem, since by using something like WebSockets or
+     * any other method for bi-directional communication, there will
+     * barely pass any time in which the data stays as `loading`
+     */
+    try {
+
+        if (access_token) {
+            const currPlayEndpoint = 'v1/me/player/currently-playing';
+            var curr = await fetchWebApi(currPlayEndpoint, 'GET', access_token);
+        }
+
         /**
-         * We do a `try and catch` because of the nature of this
-         * code and SpotifyAPI. As of now, it seems that the `await`
-         * call is not enough for the API to send a complete response.
-         * 
-         * For such reason, we must allow for error handling in these
-         * occassions. Perhaps this can be fixed, but I don't see it as
-         * a huge problem, since by using something like WebSockets or
-         * any other method for bi-directional communication, there will
-         * barely pass any time in which the data stays as `loading`
-         * 
-         * Lastly, another solution is to treat the `data` variable as a
-         * state / global and only alter it when we get something. What I
-         * mean, is that it will stay it's last response until we receive
-         * another complete response. This could be easily implemented but
-         * idk lol.
+         * Here we get the artist and track names, cover art and time.
+         * However, in the future we ought to be more careful when 
+         * getting this data because Spotify does allow for local
+         * files to be played, which could sometimes be missing
+         * some of the data we've got here. 
          */
-        try {
-            
-            if (access_token) {
-                const currPlayEndpoint = 'v1/me/player/currently-playing';
-                var curr = await fetchWebApi(currPlayEndpoint, 'GET', access_token);
-            }
-
-            // Code to get time in M:SS format
-            var milliseconds = curr.progress_ms;
-            var seconds = Math.floor(milliseconds / 1000);
-            var remSec = seconds % 60;
-            var minutes = Math.floor(seconds / 60);
-            var time = `${minutes}:${remSec.toString().padStart(2, '0')}`;
-
-
-            /**
-             * Here we get the artist and track names, cover art and time.
-             * However, in the future we ought to be more careful when 
-             * getting this data because Spotify does allow for local
-             * files to be played, which could sometimes be missing
-             * some of the data we've got here. 
-             */
-            data = {
-                artist_name: curr.item.artists[0].name,
-                track_name: curr.item.name,
-                cover_art: curr.item.album.images[0].url,
-                time: time
-            }
+        data = {
+            artist_name: curr.item.artists[0].name,
+            artist_id: curr.item.artists[0].id,
+            track_name: curr.item.name,
+            album_name: curr.item.album.name,
+            cover_art: curr.item.album.images[0].url,
         }
-        catch (err) {
-            data = {
-                artist_name: "loading",
-                track_name: "loading",
-                cover_art: "loading",
-                time: "loading",
-                error: err
-            }
+    }
+    catch (err) {
+        data = {
+            artist_name: "loading",
+            artist_id: "loading",
+            track_name: "loading",
+            album_name: "loading",
+            cover_art: "loading"
         }
-        return data
+    }
+    return data
 }
 
 /**
@@ -137,12 +134,12 @@ async function getCurrentlyPlaying(access_token) {
  * 
  *  Reference: https://developer.spotify.com/documentation/web-api/reference/get-users-top-artists-and-tracks
  */
-async function getTopArtists(access_token){
+async function getTopArtists(access_token) {
     const ENDPOINT = 'v1/me/top/artists?time_range=short_term&limit=5';
     const result = await fetchWebApi(ENDPOINT, 'GET', access_token)
-    
+
     const topArtists = {};
-    for (index in result.items){
+    for (index in result.items) {
         var artist_name = result.items[index].name;
         var artist_id = result.items[index].id;
 
@@ -174,20 +171,102 @@ async function getLastPlayed(access_token) {
     const result = await fetchWebApi(ENDPOINT, 'GET', access_token)
 
     var data = {
-        artist_name : result.items[0].track.album.artists[0].name,
-        track_name : result.items[0].track.name,
-        album_name : result.items[0].track.album.name,
-        cover_art : result.items[0].track.album.images[0].url
+        artist_name: result.items[0].track.album.artists[0].name,
+        track_name: result.items[0].track.name,
+        album_name: result.items[0].track.album.name,
+        cover_art: result.items[0].track.album.images[0].url
     }
 
     return data
 }
 
+/**
+ * This method allows us to acquire the Spotify ID for the current user.
+ * By using the `v1/me` ENDPOINT we can get user information like their
+ * display name, followers, profile picture etc... but we only care about
+ * the ID.
+ * 
+ * @returns {`user.id`} - This is simply the Spotify ID, we will be using it
+ *                        to be able to work with our documents more efficiently.
+ *                        Since Spotify IDs are unique, it allows for us to easily
+ *                        perform CRUD operations by using this ID with `find()` to
+ *                        get the User's information from our collection.
+ *           
+ */
+async function getUserID(access_token) {
+    const ENDPOINT = 'v1/me'
+    const user = await fetchWebApi(ENDPOINT, 'GET', access_token)
+    return user.id
+}
+
+/**
+ * This method either creates or updates a user. In the case that it's 
+ * `ID` isn't in our collection, then it will create a new User, otherwise
+ * it will update an existing one.
+ * 
+ * It aims to provide all the data in the parameters as long as it isn't `null`,
+ * which is what we see being done with `currUserData`. It checks if these are
+ * not null, and if such is the case, then they'll be assigned to the parameter.
+ * 
+ * The elements we see here are according to that seeing in our userSchema, 
+ * which you can check out to further understand how these work.
+ * 
+ * It is also worth noting that there is an additional condition for `curr`.
+ * This is in the case that an error occurrs, then we simply will not update
+ * that data.
+ * 
+ * 
+ * @param {String} ID - This is just the SpotifyID for the current user.
+ *                      We use it to check if the user exists in our
+ *                      collection or not.
+ * 
+ * 
+* @param {Map} curr -  This is the currently playing data, for more 
+*                     details on it you can check `getCurrentlyPlaying()`
+ * 
+ * 
+ * @param {Map} base_artists - This is the set of `base_artists`. These 
+ *                             are simply the user's favorite artists,
+ *                             perhaps I should even rename it to that
+ *                             since it makes more sense...
+ * 
+ * @param {Map} similar_artists - These are simply the related artists
+ *                              to the user's `base_artists` / fav artists.
+ */
+async function createOrUpdateUser(ID, curr, base_artists, similar_artists) {
+
+    const curr_user = await user.findOne({ ID: ID })
+    console.log("CURR USER :", curr_user)
+
+    const currUserData = {
+        ...(ID && { ID }),
+        ...((curr && curr.artist_name !== "loading") && { curr }),
+        ...(base_artists && { base_artists }),
+        ...(similar_artists && { similar_artists }),
+    };
+
+    if (curr_user) {
+        console.log("Updating User")
+        Object.assign(curr_user, currUserData);
+
+        console.log(curr_user)
+        curr_user.save();
+    }
+    else {
+        console.log("Creating User")
+        const newUser = new user(currUserData);
+
+        console.log(newUser)
+        newUser.save();
+    }
+}
 
 
 module.exports = {
     getCurrentlyPlaying,
     getTopArtists,
     getLastPlayed,
+    getUserID,
+    createOrUpdateUser,
     generateRandomString
 }
