@@ -1,12 +1,22 @@
 import React, { useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View, Button, TextInput, Modal } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View, Button, TextInput, Modal, FlatList, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
+import placeholderImage from 'musicmap/download.jpeg';
+
+let friendCount = 10; // Initial friend count (dummy friend count is set)
+let updateCount = 0;
 
 const Friends = ({ navigation }) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [inputText, setInputText] = useState("");
   const [searchText, setSearchText] = useState(""); // State for search input
+
+  const friends_list = Array.from({ length: friendCount }, (_, index) => ({
+    id: index.toString(),
+    name: `Friend ${index + 1}`,
+    imageSource: placeholderImage,
+  }));
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -34,6 +44,28 @@ const Friends = ({ navigation }) => {
   const filteredFriends = friendsData.filter((friend) =>
     friend.name.toLowerCase().includes(searchText.toLowerCase())
   );
+
+  const increaseFriendCount = () => {
+    friendCount += 1;
+    updateCount += 1;
+    forceUpdate();
+  };
+
+  const decreaseFriendCount = () => {
+    if (friendCount > 0) {
+      friendCount -= 1;
+      updateCount += 1;
+      forceUpdate();
+    }
+  };
+
+  const forceUpdate = () => {
+    // This is a dummy state update to force a re-render
+    // You can use any state variable here; it won't affect the component's rendering
+    setUpdateCount(updateCount + 1);
+  };
+
+  const setUpdateCount = () => {}; // Define a dummy setUpdateCount function
 
   return (
     <SafeAreaView
@@ -132,6 +164,99 @@ const Friends = ({ navigation }) => {
           </View>
         </View>
       </Modal>
+
+      {/* Friend List code below  <----------------------------------------------------------------------*/}
+      <View
+        style={{
+          height: "100%",
+          width: "100%",
+        }}
+      >
+        <Text>Total Friends: {friendCount}</Text>
+        {/* List of friends */}
+        <FlatList
+          data={friends_list}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                backgroundColor: 'white',
+                height: 80,
+                marginLeft: 15,
+                marginRight: 15,
+                marginBottom: 10,
+                borderRadius: 15,
+                elevation: 20,
+                
+              }}
+              onPress={() => {
+                // Handle the press event for each friend here
+                console.log(`Friend ${item.name} clicked!`);
+              }}
+            >
+              {/* Profile image */}
+              <Image
+                source={item.imageSource}
+                style={{
+                  width: 75,
+                  height: 75,
+                  marginLeft: 5,
+                  marginRight: 10,
+                  borderRadius: 50,
+                }}
+              />
+
+              <View style={{ flexDirection: 'row', alignItems: 'center', }}>
+                {/* Name and last active text */}
+                <View>
+                  <Text style={{
+                    fontSize: 20,
+                    color: 'black',
+                    marginBottom: 5, // Adjust the marginBottom as needed
+                    //flexWrap: "wrap",
+                    width: 125
+                  }}>
+                    {item.name} {/* Name of user */}
+                  </Text>
+                  <Text style={{
+                    fontSize: 12.5,
+                    color: 'black',
+                  }}>Last active:</Text>
+                </View>
+
+                {/* Last played song */}
+                <View style={{ 
+                    color: 'black',
+                    // flexDirection: 'row',
+                    position: "relative",
+                    left: 10,
+                    flexDirection: 'row'}}>
+                  
+                  {/* Song Image */}
+                  <Image
+                  source={item.imageSource}
+                  style={{
+                    width: 35,
+                    height: 35,
+                    marginLeft: 5,
+                    marginRight: 10,
+                    borderRadius: 50,
+                  }}
+                  />
+                  <View>
+                    <Text style = {{fontSize: 15, flex: 1, justifyContent: "flex-end",}}>Last Played:</Text>
+                    <Text style = {{fontSize: 12, flex: 1, justifyContent: "flex-end",}}>Dummy song</Text>
+                  </View>
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
+
+      </View>
+
     </SafeAreaView>
   );
 };
