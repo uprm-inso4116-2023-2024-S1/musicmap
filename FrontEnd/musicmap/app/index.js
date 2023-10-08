@@ -7,9 +7,11 @@ import Friends from "./pages/friends";
 import Profile from "./pages/profile";
 
 const Tab = createBottomTabNavigator();
+
 const App = () => {
   return (
     <Tab.Navigator
+      initialRouteName="Map"
       tabBarOptions={{
         activeTintColor: "#D10050",
         tabBarShowLabel: false,
