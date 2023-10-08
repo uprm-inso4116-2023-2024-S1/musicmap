@@ -18,13 +18,13 @@ const Settings = ({ navigation }) => {
           text="Profile"
           icon="person-outline"
           navigation={navigation}
-          navigateTo="Settings"
+          navigateTo="Profile"
         />
         <SettingsTabs
           text="Notifications"
           icon="notifications-outline"
           navigation={navigation}
-          navigateTo="Settings"
+          navigateTo="Notifications"
         />
         <SettingsTabs text="Dark Mode" icon="contrast-sharp" />
         <SettingsTabs text="Language" icon="language-outline" />
