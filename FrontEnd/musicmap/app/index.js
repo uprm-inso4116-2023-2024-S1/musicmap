@@ -16,6 +16,7 @@ const Tab = createBottomTabNavigator();
 const App = () => {
   return (
     <Tab.Navigator
+      initialRouteName="Map"
       tabBarOptions={{
         activeTintColor: "#D10050",
         tabBarShowLabel: false,

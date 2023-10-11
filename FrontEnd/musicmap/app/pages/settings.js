@@ -1,42 +1,36 @@
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Button, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
+import SettingsTabs from "../components/SettingsTabs";
 
-const Settings = () => {
+const Settings = ({ navigation }) => {
   return (
     <SafeAreaView
       style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
+        flexDirection: "column",
+        marginTop: "10px",
+        marginLeft: "10%",
+        height: "100%",
       }}
     >
-      <TouchableOpacity
-        style={{
-          //Touchable opacity, creates an area that can be "touched", basically reates a button area
-          height: 50, //60%',
-          width: "90%", //width of designated area relative to screen size
-          justifyContent: "center", //Literally places all objects in the center of the area
-          alignItems: "left", //Aligns every object relative to their left
-          backgroundColor: "white", //Sets the color to the color code input, can also be place literally, like 'red'
-          borderRadius: 10, //Rounds the corners of the imaginary box area
-          top: -275,
-          elevation: 20,
-        }}
-      >
-        <Text
-          style={{
-            color: "#424242",
-            textAlign: "left",
-            marginLeft: "15%",
-            fontSize: 20,
-            fontFamily: "System",
-            fontWeight: "bold",
-          }}
-        >
-          Profile
-        </Text>
-      </TouchableOpacity>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <SettingsTabs
+          text="Profile"
+          icon="person-outline"
+          navigation={navigation}
+          navigateTo="Profile"
+        />
+        <SettingsTabs
+          text="Notifications"
+          icon="notifications-outline"
+          navigation={navigation}
+          navigateTo="Notifications"
+        />
+        <SettingsTabs text="Dark Mode" icon="contrast-sharp" />
+        <SettingsTabs text="Language" icon="language-outline" />
+        <SettingsTabs text="Account Privacy" icon="lock-closed-outline" />
+        <SettingsTabs text="FAQ" icon="help-circle-outline" />
+      </ScrollView>
 
       <Stack.Screen //Allows editing of screen components, header, footer, etc
         options={{
