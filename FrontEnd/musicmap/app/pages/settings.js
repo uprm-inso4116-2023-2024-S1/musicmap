@@ -2,8 +2,19 @@ import { Button, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import SettingsTabs from "../components/SettingsTabs";
+import { useTheme } from '@theme';
 
 const Settings = ({ navigation }) => {
+  const { colors } = useTheme();
+
+  const changeTheme = () => {
+    if(isDark){
+        setScheme('light');
+    } else {
+        setScheme('dark');
+    }
+  } 
+
   return (
     <SafeAreaView
       style={{
@@ -11,6 +22,7 @@ const Settings = ({ navigation }) => {
         marginTop: "10px",
         marginLeft: "10%",
         height: "100%",
+        backgroundColor: colors.secondaryBackground
       }}
     >
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -38,6 +50,7 @@ const Settings = ({ navigation }) => {
             <Text
               style={{
                 color: "#424242",
+                //color: colors.text,
                 fontSize: 30,
                 marginLeft: "7%",
                 fontFamily: "System",
@@ -49,6 +62,13 @@ const Settings = ({ navigation }) => {
           ),
           headerTitle: "",
         }}
+      />
+
+      <Button
+          style={{ marginTop: 40, height: 40, width: 160, backgroundColor: colors.button, borderRadius: 8 }}
+          textStyle={{ color: colors.buttonText }}
+          text='Change theme mode'
+          onPress={() => changeTheme()}
       />
     </SafeAreaView>
   );

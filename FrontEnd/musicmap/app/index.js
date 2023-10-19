@@ -10,6 +10,9 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import Entypo from '@expo/vector-icons/Entypo';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+import { AppearanceProvider } from 'react-native-appearance';
+import { ThemeProvider } from '@theme';
+
 
 const Tab = createBottomTabNavigator();
 
@@ -22,6 +25,14 @@ const App = () => {
         tabBarShowLabel: false,
       }}
     >
+      <Provider store={Store}>
+        <AppearanceProvider>
+          <ThemeProvider>
+            <StatefullApp />
+          </ThemeProvider>
+        </AppearanceProvider>
+      </Provider>
+
       <Tab.Screen name="Settings" component={Settings} options={{
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="gear" size={"30%"} color={color} />
