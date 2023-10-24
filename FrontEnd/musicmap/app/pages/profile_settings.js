@@ -33,13 +33,13 @@ const Profile_settings= () => {
                 <Text
                   style={{
                     color: "#424242",
-                    fontSize: 25,
+                    fontSize: 20,
                     marginLeft: "7%",
                     fontFamily: "System",
                     fontWeight: "bold",
                   }}
                 >
-                  Profile_Settings
+                  Profile Settings
                 </Text>
               ),
               headerTitle: "",

@@ -64,7 +64,7 @@ const Settings = ({ navigation }) => {
             <Text
               style={{
                 color: "#424242",
-                fontSize: 30,
+                fontSize: 25,
                 marginLeft: "7%",
                 fontFamily: "System",
                 fontWeight: "bold",
