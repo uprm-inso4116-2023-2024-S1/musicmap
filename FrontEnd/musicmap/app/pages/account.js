@@ -36,12 +36,14 @@ const Account = ({navigation}) => {
             <TextInput
               style={styles.input}
               placeholder="Username or Email"
+              placeholderTextColor="#ccc"
               value={userName}
               onChangeText={(text) => setUserName(text)}
             />
             <TextInput
               style={styles.input}
               placeholder="Password"
+              placeholderTextColor="#ccc"
               secureTextEntry
               value={userPassword}
               onChangeText={(text) => setUserPassword(text)}
