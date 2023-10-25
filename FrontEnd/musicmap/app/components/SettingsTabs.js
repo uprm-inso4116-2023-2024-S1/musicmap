@@ -1,46 +1,43 @@
-import React from "react";
-import { Button, Text, View } from "react-native";
+import React, { useState } from "react";
+import { Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-const SettingsTabs = ({ navigation, navigateTo, text, icon }) => {
+const SettingsTabs = ({ navigation, navigateTo, text }) => {
+  const isToggleable = ["Location", "Contacts", "Photos", "Private Account", "Dark Mode", "Pause Music", "Nearby Music", "Recommended Music"].includes(text);
+  const [isToggled, setIsToggled] = useState(false);
+
+  const handleToggle = () => {
+    setIsToggled(!isToggled);
+  };
+
   return (
     <View>
       <TouchableOpacity
-        onPress={navigation != undefined ? () => navigation.navigate(navigateTo) : null}
+        onPress={navigation != undefined ? () => {
+          if (isToggleable) {
+            handleToggle();
+          }
+          navigation.navigate(navigateTo);
+        } : null}
         style={{
-          display: "grid",
-          gridTemplateColumns: "30px 95% auto",
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
           height: 50,
           width: "90%",
-          //   justifyContent: "space-between",
-          //   alignItems: "center",
           backgroundColor: "white",
           borderRadius: 10,
-          marginBottom: "10px",
-          flexDirection: "row",
-          //   top: -275,
-          //   elevation: 20,
+          marginBottom: 10,
         }}
       >
-        <View
-          style={{
-            display: "flex",
-            alignItems: "flex-start",
-            justifyContent: "center",
-            marginLeft: "10px",
-          }}
-        >
-          <Ionicons name={icon} size={30} color="black" />
-        </View>
         <Text
           style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-start",
+            flex: 1,
+            marginLeft: 30,
             color: "#424242",
-            textAlign: "left",
-            marginLeft: "30px",
             fontSize: 20,
             fontFamily: "System",
             fontWeight: "bold",
@@ -48,25 +45,20 @@ const SettingsTabs = ({ navigation, navigateTo, text, icon }) => {
         >
           {text}
         </Text>
-        <View
-          style={{
-            // width: '85%',
-            display: "flex",
-            // alignItems: "flex-end",
-            justifyContent: "center",
-          }}
-        >
-          {text == "Dark Mode" ? (
-            <Ionicons
-              style={{ marginRight: "5px" }}
-              name="toggle-sharp"
-              size={30}
-              color="black"
-            />
-          ) : (
-            <Ionicons name="chevron-forward-sharp" size={30} color="black" />
-          )}
-        </View>
+        {isToggleable ? (
+          <MaterialIcons
+            name={isToggled ? "toggle-on" : "toggle-off"}
+            size={50}
+            color="black"
+            onPress={handleToggle}
+          />
+        ) : (
+          <Ionicons
+            name="chevron-forward"
+            size={30}
+            color="black"
+          />
+        )}
       </TouchableOpacity>
     </View>
   );
