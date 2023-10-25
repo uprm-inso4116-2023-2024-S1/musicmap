@@ -32,13 +32,13 @@ const Notification_settings= () => {
                 <Text
                   style={{
                     color: "#424242",
-                    fontSize: 25,
+                    fontSize: 20,
                     marginLeft: "7%",
                     fontFamily: "System",
                     fontWeight: "bold",
                   }}
                 >
-                  Notification_settings
+                  Notification settings
                 </Text>
               ),
               headerTitle: "",

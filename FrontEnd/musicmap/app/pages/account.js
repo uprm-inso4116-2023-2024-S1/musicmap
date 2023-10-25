@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingVi
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
 
-const Account = () => {
+const Account = ({navigation}) => {
   const [userName, setUserName] = useState("");
   const [userPassword, setUserPassword] = useState("");
 
@@ -23,6 +23,7 @@ const Account = () => {
   };
   const handlesignup = () => {
     //Function to call when Sign up is pressed
+    navigation.navigate('Sign_Up')
     console.log("Sign-Up");
   };
 
@@ -74,7 +75,7 @@ const Account = () => {
                     fontWeight: "bold",
                   }}
                 >
-                  Account_Login
+                  Account Login
                 </Text>
               ),
               headerTitle: "",
@@ -98,8 +99,9 @@ const styles = StyleSheet.create({
     color: "#424242",
   },
   loginContainer: {
-    width: "80%",
+    width: "70%",
     alignItems: "center", // Center the login fields horizontally
+
   },
   input: {
     borderWidth: 1,
@@ -115,7 +117,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     alignItems: "center",
-    width: "100%", // Make the button full width
+    width: '70%',
+    marginTop:20
   },
   buttonText: {
     color: "white",

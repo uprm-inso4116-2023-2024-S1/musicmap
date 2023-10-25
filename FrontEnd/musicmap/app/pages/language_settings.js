@@ -38,7 +38,7 @@ const Language_settings= () => {
                     fontWeight: "bold",
                   }}
                 >
-                  Language_Settings
+                  Language Settings
                 </Text>
               ),
               headerTitle: "",
