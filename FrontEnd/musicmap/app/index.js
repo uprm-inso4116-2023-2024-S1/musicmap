@@ -9,6 +9,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import Entypo from '@expo/vector-icons/Entypo';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import FriendProfile from "./components/friendProfile";
 
 
 const Tab = createBottomTabNavigator();
@@ -52,6 +53,9 @@ const App = () => {
             <Ionicons name="person" size={"30%"} color={color} />
           ),
         }} />
+      <Tab.Screen name="FriendProfile" component={FriendProfile}  options={{tabBarButton: () => null,
+      tabBarVisible:false //hide tab bar on this screen
+      }} />
     </Tab.Navigator>
   );
 };
