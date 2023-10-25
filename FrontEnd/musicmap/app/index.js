@@ -9,12 +9,14 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import Entypo from '@expo/vector-icons/Entypo';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import FriendProfile from "./components/friendProfile";
 import Profile_settings from "./pages/profile_settings";
 import Notification_settings from "./pages/notification_settings";
 import Language_settings from "./pages/language_settings";
 import Privacy_settings from "./pages/privacy_settings";
 import FAQSection from "./pages/FAQ_settings";
 import Sign_up from "./pages/sign_up";
+
 
 const Tab = createBottomTabNavigator();
 
@@ -56,6 +58,10 @@ const App = () => {
             <Ionicons name="person" size={30} color={color} />
           ),
         }} />
+
+      <Tab.Screen name="FriendProfile" component={FriendProfile}  options={{tabBarButton: () => null,
+      tabBarVisible:false //hide tab bar on this screen
+      }} />
 
       <Tab.Screen name="Account" component={Account} options={{
           tabBarIcon: ({ color, size }) => (
