@@ -41,24 +41,28 @@ const Sign_up = () => {
             <TextInput
               style={styles.input}
               placeholder="Name"
+              placeholderTextColor="#ccc"
               value={Name}
               onChangeText={(text) => setName(text)}
             />
             <TextInput
               style={styles.input}
               placeholder="Username"
+              placeholderTextColor="#ccc"
               value={userName}
               onChangeText={(text) => setUserName(text)}
             />
             <TextInput
               style={styles.input}
               placeholder="Email"
+              placeholderTextColor="#ccc"
               value={userEmail}
               onChangeText={(text) => setuserEmail(text)}
             />
             <TextInput
               style={styles.input}
               placeholder="Password"
+              placeholderTextColor="#ccc"
               secureTextEntry
               value={userPassword}
               onChangeText={(text) => setUserPassword(text)}
