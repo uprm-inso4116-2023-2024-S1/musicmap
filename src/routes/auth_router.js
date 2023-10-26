@@ -8,11 +8,16 @@ require('dotenv').config()
 // functions
 const { getCurrentlyPlaying,
     getLastPlayed,
+    getSimilarArtists,
     getTopArtists,
     getUserID,
-    createOrUpdateUser
-
 } = require('./functions/spotify_functions');
+
+const { createOrUpdateUser } = require('./functions/db_functions');
+
+
+
+
 
 
 // auth middleware to manage tokens
@@ -32,6 +37,7 @@ const token_middleware = (req, res, next) => {
 };
 
 router.use(token_middleware);
+
 
 
 
@@ -100,5 +106,76 @@ router.get('/render', async function (req, res) {
     }
 });
 
+
+// Get the top artists
+router.get('/getTopArtists', async (req, res) => {
+    const cookie = JSON.parse(req.cookies.music_map);
+
+    if (cookie.access_token) {
+        const data = await getTopArtists(cookie.access_token);
+        res.json(data);
+    }
+    else {
+        res.send("Please make sure you're logged in")
+    }
+});
+
+// Get the similar artists
+router.get('/getSimilarArtists', async (req, res) => {
+    const cookie = JSON.parse(req.cookies.music_map);
+
+    if (cookie.access_token) {
+        const topArtists = await getTopArtists(cookie.access_token);
+        const similarArtists = {};
+
+        for (const artist in topArtists) {
+            const id = topArtists[artist];
+            const similar = await getSimilarArtists(cookie.access_token, id);
+            similarArtists[artist] = similar;
+        }
+
+        res.json(similarArtists);
+    }
+    else {
+        res.send("Please make sure you're logged in")
+    }
+});
+
+// update user with based artists and related artists
+router.get('/updateUser', async (req, res) => {
+    const cookie = JSON.parse(req.cookies.music_map);
+
+    if (cookie.access_token) {
+        // get all the necesary information to update user
+        const userId = await getUserID(cookie.access_token);
+        const curr = await getCurrentlyPlaying(cookie.access_token);
+        const baseArtists = await getTopArtists(cookie.access_token);
+        const similarArtists = {};
+
+        for(artist in baseArtists) {
+            const similarArtistsList =  await getSimilarArtists(cookie.access_token, baseArtists[artist]);
+            for(index in similarArtistsList) {
+                similarArtists[similarArtistsList[index].name] = similarArtistsList[index].id;
+            }
+        }
+
+        // store on db
+        try {
+            const user = await createOrUpdateUser(userId, curr, baseArtists, similarArtists);
+            res.json({
+                message: 'Everything is fine!',
+                db_item: user
+            })
+        } catch(e) {
+            res.json({
+                message: 'Everything is not fine!',
+                error: e
+            })
+        }
+    }
+    else {
+        res.send("Please make sure you're logged in")
+    }
+});
 
 module.exports = router;
