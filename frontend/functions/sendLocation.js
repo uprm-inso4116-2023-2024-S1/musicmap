@@ -15,7 +15,7 @@ async function sendLocation(location) {
     
     // Put your development server (expo server) IP Address here
     // alongside the port you're using e.g. 192.0.0.0:5000
-    axios.post(`http://192.168.1.5:5000/maps/location`, location)
+    axios.post(`http://{url}:5000/maps/location`, location)
         .then(response => {
             console.log(response.data.message); // Message from the server
         })
