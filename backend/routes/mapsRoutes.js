@@ -72,7 +72,6 @@ var currLocation = null;
  */
 router.post('/location', function (req, res) {
     const locationData = req.body;
-    console.log(locationData)
 
 
     /**
@@ -109,11 +108,14 @@ router.get('/nearbyMarkers', async function (req, res) {
         var coordinates = [latitude, longitude]
         var markers = await getMarkers(coordinates)
 
+        
+
         console.log(markers)
-        markers.map((pins)=>{
-            console.log(pins.location.coordinates)
+        var pins = markers.map((pin)=>{
+            var [latitude, longitude] = pin.location.coordinates;
+            return {latitude, longitude}
         })
-        res.json(markers)
+        res.json(pins)
 
     }
     else {
