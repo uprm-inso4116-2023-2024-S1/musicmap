@@ -133,8 +133,9 @@ router.get('/allMarkers', async function(req,res){
     var markers = await getAllMarkers()
     
     var pins = markers.map((pin)=>{
+        var name = pin.name
         var [latitude, longitude] = pin.location.coordinates;
-        return {latitude, longitude}
+        return {name, latitude, longitude}
     })
 
     res.json(pins)
