@@ -7,6 +7,7 @@ import * as Location from 'expo-location';
 
 import haversineDistance from './functions/distanceCalc';
 import sendLocation from './functions/sendLocation'
+import getMarkerData from './functions/getMarkerData';
 
 /*
  * These are just the coordinates I've saved for the Mock Pins.
@@ -14,6 +15,12 @@ import sendLocation from './functions/sendLocation'
 var coord1 = {latitude:18.207604066510275, longitude:-67.14085782708979}
 var coord2 = {latitude:18.20717280650395, longitude:-67.14166720383717}
 
+var garibaldys = {
+  "coords": {
+      "latitude": 18.204900697653727, 
+      "longitude": -67.13988521587275
+  }
+}
 
 export default function App() {
   /**
@@ -45,17 +52,39 @@ export default function App() {
         return;
       }
 
-      var currentLocation = await Location.getCurrentPositionAsync({});
+      // var currentLocation = await Location.getCurrentPositionAsync({});
+      // setLocation(currentLocation.coords)
+      var currentLocation = garibaldys
       setLocation(currentLocation.coords)
+
+      // Note to self, the Development Machine
+      // address can change depending where im connected
+      // from ofc so make sure to update it :) 
       await sendLocation(currentLocation)
+
+
+      const fetchMarkerData = async()=>{
+        var data = await getMarkerData();
+        setMarkerData(data);
+        console.log("MARKERDATA",data)
+      }
+
+      fetchMarkerData();
+      // Define a variable to control the interval for fetching data
+      const dataFetchInterval = 10000; // Set to your desired interval in milliseconds (e.g., 10 seconds)
+
+      // Set up an interval to fetch data at the defined rate
+      const dataFetchIntervalId = setInterval(fetchMarkerData, dataFetchInterval);
+
+      // Cleanup interval on component unmount
+      return () => clearInterval(dataFetchIntervalId);
     };
     getPermissions();
-    console.log("marker",markerData)
-  });
+  },[]);
 
 
 
-  console.log("Location:" ,location)
+  // console.log("Location:" ,location)
   return (
     <View style={styles.container}>
 
@@ -78,6 +107,18 @@ export default function App() {
            */
         }}
         style={styles.map}>
+        
+        {/* Nearby Markers */}
+        {markerData.map((marker) => (
+          <Marker
+            key={marker.name}
+            coordinate={{
+              latitude: marker.latitude,
+              longitude: marker.longitude
+            }}
+          />
+        ))}
+
 
         {/* Mock Marker */}
         <Marker
@@ -95,7 +136,7 @@ export default function App() {
           coordinate={{
             latitude: location.latitude,
             longitude: location.longitude}}
-          pinColor='pink'
+          pinColor='blue'
         />
       </MapView>
     )}
