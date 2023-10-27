@@ -40,7 +40,11 @@
  */
 const { Router } = require('express')
 const router = Router();
-const getMarkers = require('../functions/getMarkers')
+const getMarkers = require('../functions/getMarkers');
+const getAllMarkers = require('../functions/getAllMarkers');
+
+// need to find a better way to store this, usage of Express
+// sessions would be suitable
 var currLocation = null;
 
 
@@ -110,10 +114,11 @@ router.get('/nearbyMarkers', async function (req, res) {
 
         
 
-        console.log(markers)
+        console.log("markers",markers)
         var pins = markers.map((pin)=>{
+            var name = pin.name
             var [latitude, longitude] = pin.location.coordinates;
-            return {latitude, longitude}
+            return {name,latitude, longitude}
         })
         res.json(pins)
 
@@ -121,6 +126,18 @@ router.get('/nearbyMarkers', async function (req, res) {
     else {
         res.json({ message: 'User Location has not been provided' });
     }
+});
+
+
+router.get('/allMarkers', async function(req,res){
+    var markers = await getAllMarkers()
+    
+    var pins = markers.map((pin)=>{
+        var [latitude, longitude] = pin.location.coordinates;
+        return {latitude, longitude}
+    })
+
+    res.json(pins)
 });
 
 
