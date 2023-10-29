@@ -11,59 +11,53 @@ import Entypo from '@expo/vector-icons/Entypo';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { AppearanceProvider } from 'react-native-appearance';
-import { ThemeProvider } from '@theme';
-
+import { ThemeProvider } from "./theme/theme_index";
 
 const Tab = createBottomTabNavigator();
 
 const App = () => {
   return (
-    <Tab.Navigator
-      initialRouteName="Map"
-      tabBarOptions={{
-        activeTintColor: "#D10050",
-        tabBarShowLabel: false,
-      }}
-    >
-      <Provider store={Store}>
-        <AppearanceProvider>
-          <ThemeProvider>
-            <StatefullApp />
-          </ThemeProvider>
-        </AppearanceProvider>
-      </Provider>
+    <AppearanceProvider>
+      <ThemeProvider>
+        <Tab.Navigator
+          initialRouteName="Map"
+          tabBarOptions={{
+            activeTintColor: "#D10050",
+            tabBarShowLabel: false,
+          }}
+        >
+          <Tab.Screen name="Settings" component={Settings} options={{
+            tabBarIcon: ({ color, size }) => (
+              <FontAwesome name="gear" size={"30%"} color={color} />
+            ),
+          }} />
 
-      <Tab.Screen name="Settings" component={Settings} options={{
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="gear" size={"30%"} color={color} />
-            
-          ),
-        }} />
+          <Tab.Screen name="Friends" component={Friends} options={{
+            tabBarIcon: ({ color, size }) => (
+              <FontAwesome5 name="user-friends" size={"30%"} color={color} />
+            ),
+          }} />
 
-      <Tab.Screen name="Friends" component={Friends} options={{
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome5 name="user-friends" size={"30%"} color={color} />
-          ),
-        }} />
+          <Tab.Screen name="MusicMap" component={Map} options={{
+            tabBarIcon: ({ color, size }) => (
+              <Entypo name="location-pin" size={"37%"} color={color} />
+            ),
+          }} />
 
-      <Tab.Screen name="MusicMap" component={Map} options={{
-          tabBarIcon: ({ color, size }) => (
-            <Entypo name="location-pin" size={"37%"} color={color} />
-          ),
-        }} />
+          <Tab.Screen name="Notifications" component={Notifications} options={{
+            tabBarIcon: ({ color, size }) => (
+              <FontAwesome name="bell" size={"30%"} color={color} />
+            ),
+          }} />
 
-      <Tab.Screen name="Notifications" component={Notifications} options={{
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="bell" size={"30%"} color={color} />
-          ),
-        }} />
-
-      <Tab.Screen name="Profile" component={Profile} options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person" size={"30%"} color={color} />
-          ),
-        }} />
-    </Tab.Navigator>
+          <Tab.Screen name="Profile" component={Profile} options={{
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="person" size={"30%"} color={color} />
+            ),
+          }} />
+        </Tab.Navigator>
+      </ThemeProvider>
+    </AppearanceProvider>
   );
 };
 

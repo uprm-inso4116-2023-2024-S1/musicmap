@@ -2,16 +2,21 @@ import { Button, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import SettingsTabs from "../components/SettingsTabs";
-import { useTheme } from '@theme';
+import { useTheme } from "../theme/theme_index";
+import { useColorScheme } from 'react-native';
+
 
 const Settings = ({ navigation }) => {
-  const { colors } = useTheme();
+  const { isDark, setScheme, colors } = useTheme();
+  //colors = isDark;
 
   const changeTheme = () => {
     if(isDark){
         setScheme('light');
+        //useTheme('light');
     } else {
         setScheme('dark');
+        //useTheme('dark');
     }
   } 
 
