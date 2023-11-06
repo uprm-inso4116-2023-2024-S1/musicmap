@@ -1,7 +1,7 @@
 var createError = require('http-errors');
 var express = require('express');
 
-require('./db.js')
+require('./db/conn.js')
 
 var cors = require('cors');
 var path = require('path');
