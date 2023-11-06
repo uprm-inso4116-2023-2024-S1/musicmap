@@ -1,6 +1,9 @@
 var createError = require('http-errors');
 var express = require('express');
 
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+
 var cors = require('cors');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -42,21 +45,21 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-
+// Cors settings 
 const corsOptions = {
-  origin: '*', // Allow requests from this specific origin
-  allowedHeaders: 'Content-Type', // Allow the 'Content-Type' header,
+  origin: '*', 
+  allowedHeaders: 'Content-Type', 
   credentials: true
 };
 
 app.use(cors(corsOptions));
 
+dotenv.config();
+const username = process.env.U;
+const password = process.env.P;
 
 
-const mongoose = require('mongoose');
-
-mongoose.connect('mongodb+srv://universal:2csjTvCT60Gn7TU7@testcluserno1.z3xc36s.mongodb.net/?retryWrites=true&w=majority').
-  catch(error => handleError(error));
+mongoose.connect(`mongodb+srv://${username}:${password}@testcluserno1.z3xc36s.mongodb.net/?retryWrites=true&w=majority`)
 
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error: "));
