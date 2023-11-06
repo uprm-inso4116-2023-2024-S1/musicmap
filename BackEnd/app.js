@@ -1,5 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
+var cors = require('cors');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -20,6 +21,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+const corsOptions = {
+  origin: '*', // Allow requests from this specific origin
+  methods: 'POST',           // Allow only GET and POST requests
+  allowedHeaders: 'Content-Type', // Allow the 'Content-Type' header
+};
+
+
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/testRoute', testRouter);
@@ -34,10 +44,16 @@ app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
+  
   // render the error page
   res.status(err.status || 500);
   res.render('error');
 });
+app.use(cors(corsOptions));
+
+app.listen(80, function () {
+  console.log('CORS-enabled web server listening on port 80')
+})
+
 
 module.exports = app;
