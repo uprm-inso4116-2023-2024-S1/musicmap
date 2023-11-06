@@ -54,10 +54,4 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 
-
-app.listen(80, function () {
-  console.log('CORS-enabled web server listening on port 80')
-})
-
-
 module.exports = app;
