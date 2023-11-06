@@ -1,8 +1,7 @@
 var createError = require('http-errors');
 var express = require('express');
 
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
+require('./db.js')
 
 var cors = require('cors');
 var path = require('path');
@@ -54,18 +53,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-dotenv.config();
-const username = process.env.U;
-const password = process.env.P;
-
-
-mongoose.connect(`mongodb+srv://${username}:${password}@testcluserno1.z3xc36s.mongodb.net/?retryWrites=true&w=majority`)
-
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "connection error: "));
-db.once("open", function () {
-  console.log("Connected successfully");
-});
 
 
 app.listen(80, function () {
