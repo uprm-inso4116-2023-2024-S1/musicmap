@@ -24,8 +24,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const corsOptions = {
   origin: '*', // Allow requests from this specific origin
-  methods: 'POST',           // Allow only GET and POST requests
-  allowedHeaders: 'Content-Type', // Allow the 'Content-Type' header
+  allowedHeaders: 'Content-Type', // Allow the 'Content-Type' header,
+  credentials: true
 };
 
 
