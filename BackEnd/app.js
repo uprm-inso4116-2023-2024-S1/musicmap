@@ -1,5 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
+
 var cors = require('cors');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -21,15 +22,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-const corsOptions = {
-  origin: '*', // Allow requests from this specific origin
-  allowedHeaders: 'Content-Type', // Allow the 'Content-Type' header,
-  credentials: true
-};
-
-
-
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/testRoute', testRouter);
@@ -49,7 +41,29 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+
+const corsOptions = {
+  origin: '*', // Allow requests from this specific origin
+  allowedHeaders: 'Content-Type', // Allow the 'Content-Type' header,
+  credentials: true
+};
+
 app.use(cors(corsOptions));
+
+
+
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb+srv://universal:2csjTvCT60Gn7TU7@testcluserno1.z3xc36s.mongodb.net/?retryWrites=true&w=majority').
+  catch(error => handleError(error));
+
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "connection error: "));
+db.once("open", function () {
+  console.log("Connected successfully");
+});
+
 
 app.listen(80, function () {
   console.log('CORS-enabled web server listening on port 80')
