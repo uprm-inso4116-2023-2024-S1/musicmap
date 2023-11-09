@@ -1,8 +1,12 @@
+// Import necessary React and React Native components
+
 import React, { useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+// Define the Profile component
 const Profile = () => {
+  // State for storing user profile data and editing information
   const [widgetData, setWidgetData] = useState([
     {
       title: "User Name",
@@ -30,6 +34,7 @@ const Profile = () => {
   const [editedSubtext, setEditedSubtext] = useState("");
   const [currentIndex, setCurrentIndex] = useState(-1);
 
+  // Function to handle toggling subtext editing
   const toggleEditSubtext = (subtext, index) => {
     // If you are currently editing a widget, save the changes
     if (isEditingSubtext) {
@@ -40,8 +45,10 @@ const Profile = () => {
     setEditedSubtext(subtext);
   };
 
+   // Function to update subtext when editing is complete
   const updateSubtext = () => {
     if (currentIndex !== -1) {
+      // Create a copy of widgetData and update the edited subtext
       const updatedWidgetData = [...widgetData];
       updatedWidgetData[currentIndex].subtext = editedSubtext;
       setWidgetData(updatedWidgetData);
@@ -50,6 +57,7 @@ const Profile = () => {
     setCurrentIndex(-1);
   };
 
+  // Render the Profile component
   return (
     <SafeAreaView style={{ flexDirection: "row", marginTop: 10 }}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -134,4 +142,5 @@ const Profile = () => {
   );
 };
 
+// Export the Profile component as the default export
 export default Profile;
