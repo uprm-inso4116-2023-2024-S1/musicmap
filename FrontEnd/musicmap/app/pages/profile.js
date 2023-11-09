@@ -1,217 +1,137 @@
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
+import { ScrollView, Text, TouchableOpacity, View, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Stack } from "expo-router";
 
 const Profile = () => {
+  const [widgetData, setWidgetData] = useState([
+    {
+      title: "User Name",
+      subtext: "Your Name Here",
+    },
+    {
+      title: "Favorite Music Type",
+      subtext: "Your Favorite Music Type",
+    },
+    {
+      title: "Now Playing",
+      subtext: "What You're Listening To",
+    },
+    {
+      title: "Favorite Songs",
+      subtext: "Your Favorite Songs",
+    },
+    {
+      title: "Favorite Artists",
+      subtext: "Your Favorite Artists",
+    },
+  ]);
+
+  const [isEditingSubtext, setIsEditingSubtext] = useState(false);
+  const [editedSubtext, setEditedSubtext] = useState("");
+  const [currentIndex, setCurrentIndex] = useState(-1);
+
+  const toggleEditSubtext = (subtext, index) => {
+    // If you are currently editing a widget, save the changes
+    if (isEditingSubtext) {
+      updateSubtext();
+    }
+    setIsEditingSubtext(true);
+    setCurrentIndex(index);
+    setEditedSubtext(subtext);
+  };
+
+  const updateSubtext = () => {
+    if (currentIndex !== -1) {
+      const updatedWidgetData = [...widgetData];
+      updatedWidgetData[currentIndex].subtext = editedSubtext;
+      setWidgetData(updatedWidgetData);
+    }
+    setIsEditingSubtext(false);
+    setCurrentIndex(-1);
+  };
+
   return (
-    <SafeAreaView
-      style={{
-        //SafeAreaView- Similar to HTML 'div', creates a designated sized area for you to edit
-        flexDirection: "row", //flexDirection - Orientation of the Area View, row designates it as horizontal
-        marginTop: "10px", //Margin - How much distance is placed between object and the screen borders, could be placed in pixels or in percentages based on screen size
-        // marginBottom: "90%",
-        // height: "100%", //Height - Self-explanatory, height of the object relative to screen
-      }}
-    >
+    <SafeAreaView style={{ flexDirection: "row", marginTop: 10 }}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View>
+        {widgetData.map((widget, index) => (
           <TouchableOpacity
+            key={widget.title}
+            onPress={() => toggleEditSubtext(widget.subtext, index)}
             style={{
-              //Touchable opacity, creates an area that can be "touched", basically reates a button area
-              height: 106, //60%',
-              width: "90%", //width of designated area relative to screen size
-              justifyContent: "center", //Literally places all objects in the center of the area
-              backgroundColor: "white", //Sets the color to the color code input, can also be place literally, like 'red'
+              height: widget.title === "User Name" ? 212 : 106,
+              width: "90%",
+              backgroundColor: "white",
               marginLeft: "5%",
-              borderRadius: 10, //Rounds the corners of the imaginary box area
+              borderRadius: 10,
               elevation: 5,
               marginBottom: 18,
+              flexDirection: "row",
+              justifyContent: "flex-start",
             }}
           >
-            <Text
-              style={{
-                color: "#424242",
-                textAlign: "right",
-                marginRight: 20,
-                fontSize: 25,
-                marginLeft: "3%",
-                marginTop: "-45%",
-                fontFamily: "System",
-                fontWeight: "bold",
-              }}
-            >
-              User_Name
-            </Text>
-            <Text
-              style={{
-                color: "#424242",
-                textAlign: "right",
-                marginRight: 20,
-                fontSize: 15,
-                marginLeft: "3%",
-                fontFamily: "System",
-                fontWeight: "bold",
-              }}
-            >
-              Favorite Music Type
-            </Text>
+            {isEditingSubtext && currentIndex === index ? (
+              <>
+                <TextInput
+                  value={editedSubtext}
+                  onChangeText={(text) => setEditedSubtext(text)}
+                  onBlur={updateSubtext}
+                />
+              </>
+            ) : (
+              <>
+                <View style={{ flex: 1 }}>
+                  <Text
+                    style={{
+                      color: "#424242",
+                      fontSize: 25,
+                      marginLeft: "3%",
+                      fontFamily: "System",
+                      fontWeight: "bold",
+                      textAlign: "left",
+                    }}
+                  >
+                    {widget.title}
+                  </Text>
+                  {widget.title === "User Name" ? (
+                    <View
+                      style={{
+                        marginLeft: "3%",
+                        marginTop: 10,
+                        width: 75, // Increase width to make the circle bigger
+                        height: 75, // Increase height to make the circle bigger
+                        backgroundColor: "gray",
+                        borderRadius: 50, // Make it a bigger circle
+                      }}
+                    ></View>
+                  ) : (
+                    <View
+                      style={{
+                        width: "100%",
+                        height: 5,
+                        backgroundColor: "#424242",
+                      }}
+                    ></View>
+                  )}
+                  <Text
+                    style={{
+                      color: "#424242",
+                      fontSize: 15,
+                      marginLeft: "3%",
+                      fontFamily: "System",
+                      fontWeight: "bold",
+                      textAlign: "left",
+                    }}
+                  >
+                    {widget.subtext}
+                  </Text>
+                </View>
+              </>
+            )}
           </TouchableOpacity>
-
-          <TouchableOpacity
-            style={{
-              //Touchable opacity, creates an area that can be "touched", basically reates a button area
-              height: 106, //60%',
-              width: "90%", //width of designated area relative to screen size
-              justifyContent: "center", //Literally places all objects in the center of the area
-              alignItems: "left", //Aligns every object relative to their left
-              backgroundColor: "white", //Sets the color to the color code input, can also be place literally, like 'red'
-              marginLeft: "5%",
-              borderRadius: 10, //Rounds the corners of the imaginary box area
-              elevation: 5,
-              marginBottom: 18,
-            }}
-          >
-            <Text
-              style={{
-                color: "#424242",
-                textAlign: "left",
-                marginLeft: 20,
-                fontSize: 20,
-                marginLeft: "3%",
-                marginTop: "-14%",
-                fontFamily: "System",
-                fontWeight: "bold",
-              }}
-            >
-              Now Playing
-            </Text>
-            <View
-              style={{ width: "100%", height: 5, backgroundColor: "#424242" }}
-            ></View>
-            <Text
-              style={{
-                color: "#424242",
-                textAlign: "left",
-                marginLeft: 10,
-                fontSize: 15,
-                fontFamily: "System",
-              }}
-            >
-              Now Playing
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={{
-              //Touchable opacity, creates an area that can be "touched", basically reates a button area
-              height: 106, //60%',
-              width: "90%", //width of designated area relative to screen size
-              justifyContent: "center", //Literally places all objects in the center of the area
-              alignItems: "left", //Aligns every object relative to their left
-              backgroundColor: "white", //Sets the color to the color code input, can also be place literally, like 'red'
-              marginLeft: "5%",
-              borderRadius: 10, //Rounds the corners of the imaginary box area
-              elevation: 5,
-              marginBottom: 18,
-            }}
-          >
-            <Text
-              style={{
-                color: "#424242",
-                textAlign: "left",
-                marginLeft: 20,
-                fontSize: 20,
-                marginLeft: "3%",
-                marginTop: "-14%",
-                fontFamily: "System",
-                fontWeight: "bold",
-              }}
-            >
-              Favorite Songs
-            </Text>
-            <View
-              style={{ width: "100%", height: 5, backgroundColor: "#424242" }}
-            ></View>
-            <Text
-              style={{
-                color: "#424242",
-                textAlign: "left",
-                marginLeft: 10,
-                fontSize: 15,
-                fontFamily: "System",
-              }}
-            >
-              Now Playing
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={{
-              //Touchable opacity, creates an area that can be "touched", basically reates a button area
-              height: 106, //60%',
-              width: "90%", //width of designated area relative to screen size
-              justifyContent: "center", //Literally places all objects in the center of the area
-              alignItems: "left", //Aligns every object relative to their left
-              backgroundColor: "white", //Sets the color to the color code input, can also be place literally, like 'red'
-              marginLeft: "5%",
-              borderRadius: 10, //Rounds the corners of the imaginary box area
-              elevation: 5,
-              marginBottom: 18,
-            }}
-          >
-            <Text
-              style={{
-                color: "#424242",
-                textAlign: "left",
-                marginLeft: 20,
-                fontSize: 20,
-                marginLeft: "3%",
-                marginTop: "-14%",
-                fontFamily: "System",
-                fontWeight: "bold",
-              }}
-            >
-              Favorite Artists
-            </Text>
-            <View
-              style={{ width: "100%", height: 5, backgroundColor: "#424242" }}
-            ></View>
-            <Text
-              style={{
-                color: "#424242",
-                textAlign: "left",
-                marginLeft: 10,
-                fontSize: 15,
-                fontFamily: "System",
-              }}
-            >
-              Now Playing
-            </Text>
-          </TouchableOpacity>
-        </View>
+        ))}
       </ScrollView>
-
-      <Stack.Screen //Allows editing of screen components, header, footer, etc
-        options={{
-          headerLeft: () => (
-            <Text
-              style={{
-                color: "#424242",
-                fontSize: 30,
-                marginLeft: "7%",
-                fontFamily: "System",
-                fontWeight: "bold",
-              }}
-            >
-              Profile
-            </Text>
-          ),
-          headerTitle: "",
-        }}
-      />
     </SafeAreaView>
   );
 };
 
-
-export default Profile
+export default Profile;
