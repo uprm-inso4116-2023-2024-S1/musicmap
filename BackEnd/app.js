@@ -1,4 +1,3 @@
-var bodyParser = require("body-parser");
 var createError = require('http-errors');
 var express = require('express');
 
@@ -16,11 +15,7 @@ var testRouter = require('./routes/testRoute');
 var app = express();
 
  
-app.use(
-  bodyParser.urlencoded({
-    extended: true
-  })
-);
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
