@@ -214,6 +214,7 @@ const Friends = ({ navigation }) => {
                   <Text style={{
                     fontSize: 20,
                     color: 'black',
+                    fontWeight: "bold",
                     marginBottom: 5, // Adjust the marginBottom as needed
                     //flexWrap: "wrap",
                     width: 125
