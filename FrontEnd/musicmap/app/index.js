@@ -29,6 +29,12 @@ const App = () => {
         tabBarShowLabel: false,
       }}
     >
+
+      <Tab.Screen name="Account" component={Account} options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person" size={30} color={color} />
+          ),
+        }} />
       <Tab.Screen name="Settings" component={Settings} options={{
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="gear" size={30} color={color} />
@@ -63,11 +69,7 @@ const App = () => {
       tabBarVisible:false //hide tab bar on this screen
       }} />
 
-      <Tab.Screen name="Account" component={Account} options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person" size={30} color={color} />
-          ),
-        }} />
+      
 
       <Tab.Screen name="Profile_settings" component={Profile_settings} options={{ tabBarButton: () => null, tabBarVisible: false }} />
       <Tab.Screen name="Notification_settings" component={Notification_settings} options={{ tabBarButton: () => null, tabBarVisible: false }} />
