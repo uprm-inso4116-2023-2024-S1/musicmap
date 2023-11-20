@@ -1,13 +1,13 @@
 
-var express = require('express');
+const express = require('express');
 var mongoose = require('mongoose');
 var User = require('../models/user.js')
 var db = require('../db/conn.js')
-var bodyParser = require('body-parser');
 var router = express.Router();
-const app = express();
 const encrypt = require("../tools/encryptionTools.js");
-
+const userExists = require("../tools/userVerificaton.js");
+var bodyParser = require('body-parser');
+const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -34,14 +34,9 @@ router.post('/', async (req, res, next) =>{
   // New user using model instance
   let newUser = new User({username: uname,password: encryptedPassword,email:em});
   
-  // calling collection "users" from db
-  let usersCollection = await db.collection("users");
-
-  // Getting all users that could have newUser's credentials already as an array.
-  let currentUsers = await usersCollection.find({username:{$in:[uname]}, email:{$in:[em]}}).toArray()
-
-  // If there is any user with this credentials
-  if (currentUsers.length != 0) {
+  let userVerification = await userExists(uname, em)
+  
+  if (userVerification == 0) {
     res.send("User already registered, Log In").status(200)
   }
   else{
@@ -51,14 +46,6 @@ router.post('/', async (req, res, next) =>{
   }
     
 })
-
-
-
-
-
-
-
-
 
 
 module.exports = router;

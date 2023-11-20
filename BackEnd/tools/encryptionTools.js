@@ -8,3 +8,4 @@ async function encrypt(password){
 }
 
 module.exports = encrypt;
+

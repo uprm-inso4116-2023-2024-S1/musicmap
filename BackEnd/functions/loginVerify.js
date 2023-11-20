@@ -21,4 +21,4 @@ async function loginVerify(username, password){
 }
 
 
-module.exports = loginVerify;
+module.exports = loginVerify

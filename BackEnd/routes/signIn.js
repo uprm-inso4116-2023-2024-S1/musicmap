@@ -20,5 +20,4 @@ router.post('/', async function (req, res) {
     return verifyUser
 })
 
-
 module.exports = router
