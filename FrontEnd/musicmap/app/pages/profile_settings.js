@@ -4,7 +4,9 @@ import SettingsTabs from "../components/SettingsTabs";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 
-const Profile_settings= () => {
+
+
+const Profile_settings= ({navigation}) => {
 
     return (
         <SafeAreaView
@@ -22,9 +24,12 @@ const Profile_settings= () => {
             <SettingsTabs
               text="Name"
             />
-            <SettingsTabs text="Username"/>
-            <SettingsTabs text="Bio"/>
-            <SettingsTabs text="Links"/>
+            <SettingsTabs text="Username"
+            />
+            <SettingsTabs text="Bio"
+            />
+            <SettingsTabs text="Links"          
+            />
           </ScrollView>
     
           <Stack.Screen //Allows editing of screen components, header, footer, etc
