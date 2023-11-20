@@ -232,7 +232,7 @@ const Friends = ({ navigation }) => {
                     color: 'black',
                     // flexDirection: 'row',
                     position: "relative",
-                    left: 10,
+                    left: "-10%",
                     flexDirection: 'row'}}>
                   
                   {/* Song Image */}
