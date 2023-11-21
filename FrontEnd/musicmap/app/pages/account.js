@@ -2,18 +2,30 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
+import checkLogin from '../../functions/checkLogin';
 
 const Account = ({navigation}) => {
   const [userName, setUserName] = useState("");
   const [userPassword, setUserPassword] = useState("");
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     //Function to call when log-in is pressed
-    if ((userName == "") & (userPassword == "")) {
+    if ((userName == "") || (userPassword == "")) {
       console.log("Empty Fields");
     } else {
+
       console.log("Username:", userName);
       console.log("Password:", userPassword);
+
+      var loginSuccess = await checkLogin(userName, userPassword)
+      
+      console.log(loginSuccess)
+      if(loginSuccess){
+        navigation.navigate('Profile')
+      }
+      else{
+        console.log("Login failed")
+      }
     }
   };
 

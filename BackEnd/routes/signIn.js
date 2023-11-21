@@ -3,7 +3,7 @@ var router = express.Router();
 
 
 var User = require('../models/user.js')
-const verify = require('../functions/loginVerify.js')
+const loginVerify = require('../functions/loginVerify.js');
 
 
 
@@ -16,8 +16,10 @@ router.post('/', async function (req, res) {
      * the username and password for the user are correct. 
      * If they are, we indicate a successful login.
      */
-    var verifyUser = await verify(username, password)
-    return verifyUser
+    var verifyUser = await loginVerify(username, password)
+
+    console.log(verifyUser)
+    res.send(verifyUser)
 })
 
 module.exports = router
