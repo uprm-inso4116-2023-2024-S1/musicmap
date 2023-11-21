@@ -12,14 +12,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 
-// GET all users
-router.get('/', async (req, res, next) =>{
-  let usersCollection = await db.collection("users");
-  let currentUsers = await usersCollection.find({})
-  .toArray();
-  res.send(currentUsers).status(200);
-});
-
 // POST a new user
 router.post('/', async (req, res, next) =>{
   
@@ -34,6 +26,11 @@ router.post('/', async (req, res, next) =>{
   // New user using model instance
   let newUser = new User({username: uname,password: encryptedPassword,email:em});
   
+  /*
+  * Function below verifies if there is a user in the database
+  * with those credentials. Returns 0 if there is, 1 if there 
+  * is none (New User).
+  */
   let userVerification = await userExists(uname, em)
   
   if (userVerification == 0) {
