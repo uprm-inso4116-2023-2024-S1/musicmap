@@ -10,25 +10,39 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
+import checkSignUp from '../../functions/checkSignUp';
 
-const Sign_up = () => {
+const Sign_up = ({navigation}) => {
   // State variables to store user input data
-  const [Name, setName] = useState('');
   const [userName, setUserName] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [userEmail, setuserEmail] = useState('');
 
   // Function to handle sign-up process
-  const handleSignup = () => {
-    if (userName === '' || userPassword === '' || userEmail === '' || Name === '') {
+  const handleSignup = async () => {
+    if (userName === '' || userPassword === '' || userEmail === '') {
       console.log('Empty Fields');
     } else {
       // Log user input data (you can add sign-up logic here in the future)
-      console.log('Name:', Name);
       console.log('Username:', userName);
       console.log('Email:', userEmail);
       console.log('Password:', userPassword);
-      // Future code to handle Sign up goes here
+
+
+      
+      console.log("Checking Sign Up")
+      var signUpSuccess = await checkSignUp(userName, userEmail, userPassword);
+      
+      // User Succesfully signed up. New User is created
+      if (signUpSuccess==true){
+        navigation.navigate('Profile')
+      }
+
+      //Otherwise, send a message indicating a failed login.
+      //this is only in the console for now however
+      else{
+        console.log("Sign Up Failed")
+      }
     }
   };
 
@@ -38,13 +52,6 @@ const Sign_up = () => {
         <SafeAreaView style={styles.safeArea}>
           <Text style={styles.title_text}>Sign Up</Text>
           <View style={styles.signupContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="Name"
-              placeholderTextColor="#ccc"
-              value={Name}
-              onChangeText={(text) => setName(text)}
-            />
             <TextInput
               style={styles.input}
               placeholder="Username"

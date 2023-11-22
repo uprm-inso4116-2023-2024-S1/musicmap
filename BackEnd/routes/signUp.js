@@ -33,12 +33,16 @@ router.post('/', async (req, res, next) =>{
   */
   let userVerification = await userExists(uname, em)
   
+
+  // Failed sign up
   if (userVerification == 0) {
-    res.send("User already registered, Log In").status(200)
+    res.send(false).status(200)
   }
+
+  //successful sign up
   else{
     await newUser.save();
-    res.send("New User Added").status(200)
+    res.send(true).status(200)
 
   }
     

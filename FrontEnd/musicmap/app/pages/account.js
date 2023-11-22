@@ -17,12 +17,15 @@ const Account = ({navigation}) => {
       console.log("Username:", userName);
       console.log("Password:", userPassword);
 
+      // Call `checkLogin` function to verify if credentials are valid
       var loginSuccess = await checkLogin(userName, userPassword)
       
-      console.log(loginSuccess)
+      // If login is successful, we redirect user to profile page
       if(loginSuccess){
         navigation.navigate('Profile')
       }
+
+      // Otherwise, indicate failure of login.
       else{
         console.log("Login failed")
       }
