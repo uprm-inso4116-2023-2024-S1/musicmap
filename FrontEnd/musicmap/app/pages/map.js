@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { SafeAreaView, StyleSheet, Alert } from "react-native";
+import { SafeAreaView, StyleSheet, Alert, Text } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from 'expo-location';
 
 const Map = () => {
-  
   // Debug function to delete markers
   const deleteMarker = (targetLocation) => {
     const updatedMarkers = markers.filter(marker =>
@@ -14,19 +13,20 @@ const Map = () => {
     setMarkers(updatedMarkers);
   };
 
+  //Constants used in map component
   const [markers, setMarkers] = useState([]);
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLongitude] = useState(null);
+  const [latitude, setLatitude] = useState(18.2073496); //Fallback latitude in case fetching it doesn't work initially
+  const [longitude, setLongitude] = useState(-67.1445881);//Fallback longitude in case fetching it doesn't work initially
   const [errorMsg, setErrorMsg] = useState(null);
+  const [deletedMarker, setDeletedMarker] = useState(null);
 
+  //Asks for location permission
   useEffect(() => {
     const fetchData = async () => {
       try {
         let { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
           setErrorMsg('Permission to access location was denied');
-          setLatitude(18.2073496); // Default location
-          setLongitude(-67.1445881); // Default location
           return;
         }
 
@@ -36,20 +36,18 @@ const Map = () => {
       } catch (error) {
         console.error("Error getting current location: ", error);
         setErrorMsg('Error getting current location');
-        console.log('Location grabbed successfully: ');
-        console.log(latitude, longitude, '\n');
       }
     };
 
     fetchData();
 
-    // Set the default location
+    // Sets the default location for initial render
     const defaultLocation = {
       latitude: 18.2073496,
       longitude: -67.1445881,
     };
 
-    setMarkers([{ id: 1, coordinate: defaultLocation}]);
+    setMarkers([{ id: 1, coordinate: defaultLocation }]);
   }, []); // Empty dependency array ensures the effect runs once after the initial render
 
   const handleMapPress = (e) => {
@@ -58,7 +56,6 @@ const Map = () => {
       {
         id: markers.length + 1,
         coordinate: e.nativeEvent.coordinate,
-        
       },
     ];
     console.log(e.nativeEvent.coordinate, '\n');
@@ -70,36 +67,45 @@ const Map = () => {
     if (lastMarker) {
       // Pass the last marker's location and delete it
       deleteMarker(lastMarker.coordinate);
-      Alert.alert("Debug: \n", `Marker deleted at ${lastMarker.coordinate.latitude}, ${lastMarker.coordinate.longitude}`);
-    } else {
-      Alert.alert("Debug: \n", "No markers to delete");
+      setDeletedMarker(lastMarker);
     }
   };
 
+  // Show alert outside the render cycle
+  useEffect(() => {
+    if (deletedMarker) {
+      Alert.alert("Debug:", `Marker deleted at ${deletedMarker.coordinate.latitude}, ${deletedMarker.coordinate.longitude}`);
+      setDeletedMarker(null); // Reset deletedMarker after displaying the alert
+    }
+  }, [deletedMarker]);
+
   return (
     <SafeAreaView style={styles.container}>
-      <MapView
-        style={styles.map}
-        region={{
-          latitude: latitude,
-          longitude: longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        }}
-        onPress={handleMapPress}
-        onLongPress={handleMapLongPress}
-        //mapType="satellite" Uncomment for satellite view
-      >
-        {markers.map((marker) => (
-          <Marker
-            key={marker.id}
-            image={require("../imgs/Pin.png")}
-            coordinate={marker.coordinate}
-            pinColor={marker.color}
-            onPress={() => Alert.alert("Marker Pressed")}
-          />
-        ))}
-      </MapView>
+      {latitude !== null && longitude !== null ? (
+        <MapView
+          style={styles.map}
+          // mapType="satellite" //Uncomment for satellite view
+          region={{
+            latitude: latitude,
+            longitude: longitude,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01,
+          }}
+          onPress={handleMapPress}
+          onLongPress={handleMapLongPress}
+        >
+          {markers.map((marker) => (
+            <Marker
+              key={marker.id}
+              image={require("../imgs/Pin.png")}
+              coordinate={marker.coordinate}
+              onPress={() => Alert.alert("Marker Pressed")}
+            />
+          ))}
+        </MapView>
+      ) : (
+        <Text>Loading...</Text>
+      )}
     </SafeAreaView>
   );
 };
