@@ -9,7 +9,7 @@ const Profile = () => {
   const [widgetData, setWidgetData] = useState([
     {
       title: "User Name",
-      subtext: "Your Name Here",
+      subtext: "Bio Text",
     },
     {
       title: "Favorite Music Type",
