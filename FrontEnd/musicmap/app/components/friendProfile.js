@@ -5,6 +5,24 @@ import { Stack } from "expo-router";
 import Widget from './widget';
 
 function FriendProfile() {
+
+  const handleFriendRequest = (accepted) => {
+    // Your logic for handling friend requests
+    if (accepted) {
+      // Logic for accepting friend request
+      console.log("Friend request accepted");
+
+      // Navigate to the 'AcceptedPage' (replace with your actual page name)
+      navigation.navigate('AcceptedPage');
+    } else {
+      // Logic for declining friend request
+      console.log("Friend request declined");
+
+      // Navigate to the 'DeclinedPage' (replace with your actual page name)
+      navigation.navigate('DeclinedPage');
+    }
+  };
+  
   return (
     <SafeAreaView
       style={{
@@ -28,9 +46,24 @@ function FriendProfile() {
         SecondText={"Friend's favorite songs"}
         />
         <Widget
-        MainText={'Favorite Aritsts'}
+        MainText={'Favorite Artists'}
         SecondText={"Friend's favorite artists"}
-        />   
+        />  
+
+        <View style={styles.friendRequestButtons}>
+          <TouchableOpacity
+            style={[styles.button, { backgroundColor: 'green' }]}
+            onPress={() => handleFriendRequest(true)}
+          >
+            <Text style={styles.buttonText}>Accept</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, { backgroundColor: 'red' }]}
+            onPress={() => handleFriendRequest(false)}
+          >
+            <Text style={styles.buttonText}>Decline</Text>
+          </TouchableOpacity>
+        </View>
  
       </ScrollView>
 
@@ -90,6 +123,39 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: "System",
   },
+  friendRequestButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 18,
+    marginTop:20
+  },
+
+  button: {
+    flex: 1,
+    paddingVertical: 15,
+    borderRadius: 25,
+    elevation: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  acceptButton: {
+    backgroundColor: 'green',
+    marginRight: 10,
+  },
+
+  declineButton: {
+    backgroundColor: 'red',
+    marginLeft: 10,
+  },
+
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+
 });
 
 export default FriendProfile;
