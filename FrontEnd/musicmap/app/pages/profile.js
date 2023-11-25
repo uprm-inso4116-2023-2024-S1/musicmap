@@ -70,7 +70,7 @@ const Profile = () => {
       flexDirection: "row",
       justifyContent: "flex-start",
       borderWidth: widgetData[index].title === "User Name" ? 2 : 0,
-      borderColor: "blue",
+      borderColor: "white",
     };
   };
 
