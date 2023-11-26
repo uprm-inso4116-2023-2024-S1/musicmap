@@ -85,7 +85,7 @@ const Profile = () => {
               value={editedSubtext}
               onChangeText={(text) => setEditedSubtext(text)}
               onBlur={updateSubtext}
-              placeholder="Enter your bio here"
+              placeholder="Type here..."
               multiline
               style={{
                 marginLeft: "3%",
