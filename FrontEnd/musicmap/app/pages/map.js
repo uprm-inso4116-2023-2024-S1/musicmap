@@ -1,26 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { SafeAreaView, StyleSheet, Alert, Text } from "react-native";
+import { SafeAreaView, StyleSheet, Alert, Text, Modal, Pressable, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from 'expo-location';
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 const Map = () => {
-  // Debug function to delete markers
-  const deleteMarker = (targetLocation) => {
-    const updatedMarkers = markers.filter(marker =>
-      marker.coordinate.latitude !== targetLocation.latitude ||
-      marker.coordinate.longitude !== targetLocation.longitude
-    );
-    setMarkers(updatedMarkers);
-  };
-
-  //Constants used in map component
   const [markers, setMarkers] = useState([]);
-  const [latitude, setLatitude] = useState(18.2073496); //Fallback latitude in case fetching it doesn't work initially
-  const [longitude, setLongitude] = useState(-67.1445881);//Fallback longitude in case fetching it doesn't work initially
+  const [latitude, setLatitude] = useState(18.2073496);
+  const [longitude, setLongitude] = useState(-67.1445881);
   const [errorMsg, setErrorMsg] = useState(null);
   const [deletedMarker, setDeletedMarker] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedMarker, setSelectedMarker] = useState(null);
 
-  //Asks for location permission
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -41,14 +33,21 @@ const Map = () => {
 
     fetchData();
 
-    // Sets the default location for initial render
     const defaultLocation = {
       latitude: 18.2073496,
       longitude: -67.1445881,
     };
 
     setMarkers([{ id: 1, coordinate: defaultLocation }]);
-  }, []); // Empty dependency array ensures the effect runs once after the initial render
+  }, []);
+
+  const deleteMarker = (targetLocation) => {
+    const updatedMarkers = markers.filter(marker =>
+      marker.coordinate.latitude !== targetLocation.latitude ||
+      marker.coordinate.longitude !== targetLocation.longitude
+    );
+    setMarkers(updatedMarkers);
+  };
 
   const handleMapPress = (e) => {
     const newMarkers = [
@@ -58,33 +57,92 @@ const Map = () => {
         coordinate: e.nativeEvent.coordinate,
       },
     ];
-    console.log(e.nativeEvent.coordinate, '\n');
     setMarkers(newMarkers);
   };
 
   const handleMapLongPress = (e) => {
     const lastMarker = markers[markers.length - 1];
     if (lastMarker) {
-      // Pass the last marker's location and delete it
       deleteMarker(lastMarker.coordinate);
       setDeletedMarker(lastMarker);
     }
   };
 
-  // Show alert outside the render cycle
   useEffect(() => {
     if (deletedMarker) {
       Alert.alert("Debug:", `Marker deleted at ${deletedMarker.coordinate.latitude}, ${deletedMarker.coordinate.longitude}`);
-      setDeletedMarker(null); // Reset deletedMarker after displaying the alert
+      setDeletedMarker(null);
     }
   }, [deletedMarker]);
 
+  const openMarkerModal = (marker) => {
+    setSelectedMarker(marker);
+    setOpenModal(true);
+  };
+
+  const closeMarkerModal = () => {
+    setSelectedMarker(null);
+    setOpenModal(false);
+  };
+
+  const renderMarkerModal = () => {
+    return (
+      <Modal
+        visible={openModal}
+        transparent={true}
+        onRequestClose={closeMarkerModal}
+        animationType="slide"
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Ionicons
+              name="close"
+              selectable={true}
+              size={30}
+              style={{ alignSelf: "flex-end" }}
+              onPress={closeMarkerModal}
+            />
+            <Pressable
+              style={({ pressed }) => [
+                styles.modal_container,
+                pressed && { backgroundColor: "#1877F218" },
+              ]}
+              onPress={() => console.log("send request <3")}
+            >
+              <Text style={styles.modal_friend_request}>
+                Send Friend Request
+              </Text>
+            </Pressable>
+            {selectedMarker && (
+              <View style={styles.box}>
+                <Text style={styles.modal_text}>Name</Text>
+                <Text style={styles.modal_text}>Bio</Text>
+              </View>
+            )}
+            {selectedMarker && (
+              <View style={styles.box}>
+                <Text style={styles.modal_text}>Currently Listening</Text>
+                <Text style={styles.modal_text}>Kirby Candy Mountain (?)</Text>
+              </View>
+            )}
+            {selectedMarker && (
+              <View style={styles.box}>
+                <Text style={styles.modal_text}>Top Artists:</Text>
+                <Text style={styles.modal_text}>{`\u2022 Koji Kondo`}</Text>
+              </View>
+            )}
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
+      {renderMarkerModal()}
       {latitude !== null && longitude !== null ? (
         <MapView
           style={styles.map}
-          // mapType="satellite" //Uncomment for satellite view
           region={{
             latitude: latitude,
             longitude: longitude,
@@ -99,7 +157,7 @@ const Map = () => {
               key={marker.id}
               image={require("../imgs/Pin.png")}
               coordinate={marker.coordinate}
-              onPress={() => Alert.alert("Marker Pressed")}
+              onPress={() => openMarkerModal(marker)}
             />
           ))}
         </MapView>
@@ -111,12 +169,65 @@ const Map = () => {
 };
 
 const styles = StyleSheet.create({
+
+  modal_text: {
+    fontWeight: '500', 
+    fontSize: 18 
+  },
+
+  modal_friend_request:{
+    color: "white", 
+    fontWeight: "800", 
+    fontSize: 15 
+
+  },
+
+  modal_container:{
+    width: 250,
+    backgroundColor: "#1877F2",
+    height: 35,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 8,
+
+  },
   container: {
     flex: 1,
   },
   map: {
     width: "100%",
     height: "100%",
+  },
+  box: {
+    width: 350,
+    height: 100,
+    borderRadius: 8,
+    padding: 10,
+    backgroundColor: 'white',
+    marginBottom: 10,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalView: {
+    width: 400,
+    maxHeight: "90%",
+    margin: 20,
+    backgroundColor: "#efefef",
+    borderRadius: 15,
+    padding: 15,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 1,
+    shadowRadius: 100,
+    elevation: 5,
+    gap: 10,
   },
 });
 
