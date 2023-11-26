@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 // Define the Profile component
 const Profile = () => {
   // State for storing user profile data and editing information
@@ -28,12 +27,10 @@ const Profile = () => {
       subtext: "Your Favorite Artists",
     },
   ]);
-
   // States for handling editing functionality
   const [isEditingSubtext, setIsEditingSubtext] = useState(false);
   const [editedSubtext, setEditedSubtext] = useState("");
   const [currentIndex, setCurrentIndex] = useState(-1);
-
   // Function to handle toggling subtext editing
   const toggleEditSubtext = (subtext, index) => {
     // If you are currently editing a widget, save the changes
@@ -44,7 +41,6 @@ const Profile = () => {
     setCurrentIndex(index);
     setEditedSubtext(subtext);
   };
-
   // Function to update subtext when editing is complete
   const updateSubtext = () => {
     if (currentIndex !== -1) {
@@ -56,7 +52,6 @@ const Profile = () => {
     setIsEditingSubtext(false);
     setCurrentIndex(-1);
   };
-
   // Function to dynamically set styles for the "User Name" widget
   const getUserNameWidgetStyle = (index) => {
     return {
@@ -73,11 +68,9 @@ const Profile = () => {
       borderColor: "white",
     };
   };
-
   // Function to render the "User Name" widget
   const renderUserNameWidget = (widget, index) => {
     const isUserNameWidget = widget.title === "User Name";
-
     return (
       <TouchableOpacity
         key={widget.title}
@@ -109,10 +102,10 @@ const Profile = () => {
                 style={{
                   color: "#424242",
                   fontSize: 25,
-                  marginRight: "3%",
+                  marginLeft: "3%",
                   fontFamily: "System",
                   fontWeight: "bold",
-                  textAlign: "right",
+                  textAlign: "left",
                 }}
               >
                 {widget.title}
@@ -157,7 +150,6 @@ const Profile = () => {
       </TouchableOpacity>
     );
   };
-
   // Render the Profile component
   return (
     <SafeAreaView style={{ flexDirection: "row", marginTop: 10 }}>
@@ -167,6 +159,5 @@ const Profile = () => {
     </SafeAreaView>
   );
 };
-
 // Export the Profile component as the default export
 export default Profile;
