@@ -14,6 +14,8 @@ var signRouter = require('./routes/signUp');
 var testRouter = require('./routes/testRoute');
 var loginRouter = require('./routes/signIn.js');
 var userRouter = require('./routes/user.js')
+var spotifyRouter = require('./routes/spotifyRoutes.js')
+var spotifyAuthRouter = require('./routes/spotifyAuth.js')
 
 var app = express();
 
@@ -40,6 +42,8 @@ app.use('/signUp', signRouter);
 app.use('/testRoute', testRouter);
 app.use('/login', loginRouter);
 app.use('/user', userRouter);
+app.use('/spotify', spotifyRouter)
+app.use('/auth', spotifyAuthRouter)
 
 
 
