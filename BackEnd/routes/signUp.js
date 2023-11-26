@@ -42,8 +42,9 @@ router.post('/', async (req, res, next) =>{
   //successful sign up
   else{
     await newUser.save();
+    var userData = {username : uname}
+    req.session.user = userData
     res.send(true).status(200)
-
   }
     
 })

@@ -18,8 +18,26 @@ router.post('/', async function (req, res) {
      */
     var verifyUser = await loginVerify(username, password)
 
+    /**
+     * What will be returned here is either a boolean or a null.
+     * In the condition that it does return a true, we will consider
+     * this a successful login, however, if it's either false or null,
+     * then it failed.
+     * 
+     * All we're doing here is returning one of those 3 possibilites. 
+     * Then in the Front End, we handle this and call another set
+     * of functions. Also, if the user succesfully logged in, we
+     * save some data in the session.
+     */
     console.log(verifyUser)
+    if (verifyUser == true){
+        var userData = {username : username}
+        req.session.user = userData
+    }
+
     res.send(verifyUser)
+
+
 })
 
 module.exports = router
