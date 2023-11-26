@@ -1,8 +1,32 @@
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
+import { useRoute } from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
 
 const Profile = () => {
+
+  /**
+   * Check if there has been any data sent as a route parameter.
+   * The usage of the `?` prevents there being any error in case
+   * that there is no data sent, in this case, `receivedData` will
+   * just be `undefined`.
+   */
+  const route = useRoute();
+  const receivedData = route.params?.username;
+
+  const [userName, setUserName] = useState("");
+  const [current, setCurrent] = useState(null)
+  
+  useEffect(() => {
+    if (receivedData) {
+      console.log("RECEIVED DATA" , receivedData)
+      setUserName(receivedData);
+    }
+
+
+  }, [receivedData, userName]);
+
   return (
     <SafeAreaView
       style={{
@@ -40,7 +64,8 @@ const Profile = () => {
                 fontWeight: "bold",
               }}
             >
-              User_Name
+              {JSON.stringify(receivedData)}
+
             </Text>
             <Text
               style={{
@@ -203,7 +228,7 @@ const Profile = () => {
                 fontWeight: "bold",
               }}
             >
-              Profile
+              {receivedData}
             </Text>
           ),
           headerTitle: "",

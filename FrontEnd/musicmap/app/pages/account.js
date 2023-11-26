@@ -22,7 +22,7 @@ const Account = ({navigation}) => {
       
       // If login is successful, we redirect user to profile page
       if(loginSuccess){
-        navigation.navigate('Profile')
+        navigation.navigate('Profile', { username : userName})
       }
 
       // Otherwise, indicate failure of login.
