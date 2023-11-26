@@ -109,10 +109,10 @@ const Profile = () => {
                 style={{
                   color: "#424242",
                   fontSize: 25,
-                  marginLeft: "3%",
+                  marginRight: "3%",
                   fontFamily: "System",
                   fontWeight: "bold",
-                  textAlign: "left",
+                  textAlign: "right",
                 }}
               >
                 {widget.title}
