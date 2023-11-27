@@ -97,22 +97,50 @@ async function getCurrentlyPlaying(access_token) {
          *The conditionals exist to account for the potential missing data in local files.
          */
         if (curr.item.is_local) {
-            if (curr.item.artists[0].name == "") {data.artist_name=<"Unknown artist">}
-            if (curr.item.artists[0].id == "") {data.artist_id=<"">}
-            if (curr.item.name == "") {data.track_name=<"Unknown track">}
-            if (curr.item.album.name == "") {data.album_name=<"Unknown album">}
-            if (curr.item.album.images[0].url == []) {data.cover_art=<musicmap/src/images/DefaultAlbumArt.jpg>}
+         i=0 
+         while (i<5){
+          if (i==0){
+            if (curr.item.artists[0].name == "") {
+             data.artist_name=<"Unknown artist">
+             i+1
+            }
+          }
+          else if (i==1){
+            if (curr.item.artists[0].id == "") {
+             data.artist_id=<"">
+             i+1
+            }
+          }
+          else if (i==2){
+            if (curr.item.name == "") {
+             data.track_name=<"Unknown track">
+            i+1
+            }
+          }
+          else if (i==3){
+            if (curr.item.album.name == "") {
+             data.album_name=<"Unknown album">
+             i+1
+            }
+          }
+          else if (i==4){
+            if (curr.item.album.images[0].url == []) {
+             data.cover_art=<musicmap/src/images/DefaultAlbumArt.jpg>
+             i+1
+            }
+          }
          }
-         else {
+        }
+        else {
             data = {
                 artist_name: curr.item.artists[0].name,
                 artist_id: curr.item.artists[0].id,
                 track_name: curr.item.name,
                 album_name: curr.item.album.name,
                 cover_art: curr.item.album.images[0].url,
-            }
-         }
-    }
+           }
+        }
+     }
     catch (err) {
         data = {
             artist_name: "loading",
