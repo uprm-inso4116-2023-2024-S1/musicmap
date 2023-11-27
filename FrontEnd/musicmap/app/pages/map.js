@@ -1,8 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { SafeAreaView, StyleSheet, Alert, Text, Modal, Pressable, View } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  Alert,
+  Text,
+  Modal,
+  Pressable,
+  View,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import MapView, { Marker } from "react-native-maps";
-import * as Location from 'expo-location';
+import * as Location from "expo-location";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { Linking } from "react-native";
 
 const Map = () => {
   const [markers, setMarkers] = useState([]);
@@ -17,8 +28,8 @@ const Map = () => {
     const fetchData = async () => {
       try {
         let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-          setErrorMsg('Permission to access location was denied');
+        if (status !== "granted") {
+          setErrorMsg("Permission to access location was denied");
           return;
         }
 
@@ -27,7 +38,7 @@ const Map = () => {
         setLongitude(location.coords.longitude);
       } catch (error) {
         console.error("Error getting current location: ", error);
-        setErrorMsg('Error getting current location');
+        setErrorMsg("Error getting current location");
       }
     };
 
@@ -42,9 +53,10 @@ const Map = () => {
   }, []);
 
   const deleteMarker = (targetLocation) => {
-    const updatedMarkers = markers.filter(marker =>
-      marker.coordinate.latitude !== targetLocation.latitude ||
-      marker.coordinate.longitude !== targetLocation.longitude
+    const updatedMarkers = markers.filter(
+      (marker) =>
+        marker.coordinate.latitude !== targetLocation.latitude ||
+        marker.coordinate.longitude !== targetLocation.longitude
     );
     setMarkers(updatedMarkers);
   };
@@ -53,8 +65,17 @@ const Map = () => {
     const newMarkers = [
       ...markers,
       {
-        id: markers.length + 1,
-        coordinate: e.nativeEvent.coordinate,
+        user_name: "Axel",//Change to backend data
+        Bio: "Temporary Bio, change to backend \n Testing how this will look",//Change to backend data
+        id: markers.length + 1, //Change to backend data
+        coordinate: e.nativeEvent.coordinate, //Change to backend data
+        album_img: require("../imgs/temp_album.png"), //Change to backend data
+        track_name: "Garden", //Change to backend data
+        album_name: "Hablot Brown", //Change to backend data
+        href: "https://open.spotify.com/album/0m0bo1CSzebkmFL486kMZY?si=g-KisZT5SPC3uoasgNhEkQ", //Change to backend data
+        favorite_artist: "Hablot Brown",//Change to backend data
+        artist_href:
+          "https://open.spotify.com/artist/6LtgEnShwvrqAaKohg7skM?si=gHryLSMaS9WaL6ks7x43pA",//Change to backend data
       },
     ];
     setMarkers(newMarkers);
@@ -70,7 +91,10 @@ const Map = () => {
 
   useEffect(() => {
     if (deletedMarker) {
-      Alert.alert("Debug:", `Marker deleted at ${deletedMarker.coordinate.latitude}, ${deletedMarker.coordinate.longitude}`);
+      Alert.alert(
+        "Debug:",
+        `Marker deleted at ${deletedMarker.coordinate.latitude}, ${deletedMarker.coordinate.longitude}`
+      );
       setDeletedMarker(null);
     }
   }, [deletedMarker]);
@@ -115,20 +139,46 @@ const Map = () => {
             </Pressable>
             {selectedMarker && (
               <View style={styles.box}>
-                <Text style={styles.modal_text}>Name</Text>
-                <Text style={styles.modal_text}>Bio</Text>
+                <Text style={styles.username_txt}>
+                  {selectedMarker.user_name}
+                </Text>
+                <Text style={styles.bio_txt}>{selectedMarker.Bio}</Text>
               </View>
             )}
             {selectedMarker && (
               <View style={styles.box}>
-                <Text style={styles.modal_text}>Currently Listening</Text>
-                <Text style={styles.modal_text}>Kirby Candy Mountain (?)</Text>
+                <Text style={styles.modal_text}>Currently Playing</Text>
+                <View style={styles.albumInfoContainer}>
+                  <View style={styles.leftbox}>
+                    <TouchableOpacity
+                      onPress={() => Linking.openURL(selectedMarker.href)}
+                    >
+                      <Image
+                        source={selectedMarker.album_img}
+                        style={styles.album_img}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  <View style={styles.rightview}>
+                    <Text style={styles.modal_text}>
+                      {selectedMarker.track_name}
+                    </Text>
+                    <Text style={styles.album_name}>
+                      {selectedMarker.album_name}
+                    </Text>
+                  </View>
+                </View>
               </View>
             )}
             {selectedMarker && (
               <View style={styles.box}>
                 <Text style={styles.modal_text}>Top Artists:</Text>
-                <Text style={styles.modal_text}>{`\u2022 Koji Kondo`}</Text>
+                <Text
+                  style={styles.favorite_name}
+                  onPress={() => Linking.openURL(selectedMarker.artist_href)}
+                >
+                  {selectedMarker.favorite_artist}
+                </Text>
               </View>
             )}
           </View>
@@ -169,27 +219,22 @@ const Map = () => {
 };
 
 const styles = StyleSheet.create({
-
   modal_text: {
-    fontWeight: '500', 
-    fontSize: 18 
+    fontWeight: "500",
+    fontSize: 18,
   },
-
-  modal_friend_request:{
-    color: "white", 
-    fontWeight: "800", 
-    fontSize: 15 
-
+  modal_friend_request: {
+    color: "white",
+    fontWeight: "800",
+    fontSize: 15,
   },
-
-  modal_container:{
+  modal_container: {
     width: 250,
     backgroundColor: "#1877F2",
-    height: 35,
+    height: 50,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 8,
-
   },
   container: {
     flex: 1,
@@ -200,10 +245,10 @@ const styles = StyleSheet.create({
   },
   box: {
     width: 350,
-    height: 100,
+    height: 150,
     borderRadius: 8,
     padding: 10,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     marginBottom: 10,
   },
   centeredView: {
@@ -228,6 +273,39 @@ const styles = StyleSheet.create({
     shadowRadius: 100,
     elevation: 5,
     gap: 10,
+  },
+  albumInfoContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 10,
+  },
+  leftbox: {
+    marginRight: 10,
+  },
+  album_img: {
+    width: 80,
+    height: 80,
+    borderRadius: 8,
+  },
+  rightview: {
+    flex: 1,
+  },
+  album_name: {
+    marginTop: 5,
+    fontSize: 14,
+    color: "gray",
+  },
+  favorite_name: {
+    marginTop: 15,
+    fontSize: 20,
+    color: "gray",
+  },
+  username_txt: {
+    fontSize: 30,
+  },
+  bio_txt: {
+    fontSize: 15,
+    color: "gray",
   },
 });
 
