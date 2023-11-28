@@ -69,12 +69,15 @@ router.get('/', (req, res) => {
 router.get('/currPlay', async function (req, res) {
 
     const cookie = JSON.parse(req.cookies.music_map);
-    const username = await getUsername()
+    // const username = await getUsername()
+    const username = "hola"
+
     console.log("Username :", username)
 
     if (cookie.access_token && username) {
         var data = await getCurrentlyPlaying(cookie.access_token);
-        createOrUpdateUser(username, data, null, null);
+        // createOrUpdateUser(username, data, null, null);
+        console.log(data)
         res.json(data)
     }
     else {
@@ -121,10 +124,10 @@ router.get('/getSimilarArtists', async (req, res) => {
 // update user with based artists and related artists
 router.get('/updateUser', async (req, res) => {
     const cookie = JSON.parse(req.cookies.music_map);
-    const username = await getUsername()
+    // const username = await getUsername()
+    const username = "hola"
 
-
-    if (cookie.access_token && username) {
+    if (cookie.access_token) {
         // get all the necesary information to update user
         const curr = await getCurrentlyPlaying(cookie.access_token);
         const baseArtists = await getTopArtists(cookie.access_token);

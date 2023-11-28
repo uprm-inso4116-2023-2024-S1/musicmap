@@ -34,6 +34,7 @@ const spotifySchema = new mongoose.Schema({
         album_name: String,
 
         cover_art: String,
+        track_url : String
     }
 
 })

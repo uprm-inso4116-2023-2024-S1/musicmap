@@ -99,6 +99,7 @@ async function getCurrentlyPlaying(access_token) {
             track_name: curr.item.name,
             album_name: curr.item.album.name,
             cover_art: curr.item.album.images[0].url,
+            track_url: curr.item.external_urls.spotify
         }
     }
     catch (err) {
