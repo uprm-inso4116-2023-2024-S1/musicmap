@@ -39,9 +39,9 @@ const user = require('../models/user')
  * @param {Map} similar_artists - These are simply the related artists
  *                              to the user's `base_artists` / fav artists.
  */
-async function createOrUpdateUser(ID, curr, base_artists, similar_artists) {
+async function createOrUpdateUser(username, curr, base_artists, similar_artists) {
     try {
-        const curr_user = await user.findOne({ ID: ID });
+        const curr_user = await user.findOne({ username: username });
         console.log("CURR USER :", curr_user);
         
         // if curr.artist_name === "loading", curr will not be added to user in db
@@ -52,17 +52,21 @@ async function createOrUpdateUser(ID, curr, base_artists, similar_artists) {
             ...(similar_artists && { similar_artists }),
         };
     
+        // Update User
         if (curr_user) {
             console.log("Updating User");
-            Object.assign(curr_user, currUserData);
+            Object.assign(curr_user.spotify, currUserData);
     
             console.log(curr_user);
             curr_user.save();
         }
+
+        //Create New User
         else {
             console.log("Creating User")
-            const newUser = new user(currUserData);
+            const newUser = new user();
     
+            newUser.spotify = currUserData
             console.log(newUser);
             newUser.save();
         }
