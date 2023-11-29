@@ -1,39 +1,37 @@
-// Import necessary React and React Native components
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ScrollView, Text, TouchableOpacity, View, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-// Define the Profile component
+
 const Profile = () => {
-  // State for storing user profile data and editing information
-  const [widgetData, setWidgetData] = useState([
+const [widgetData, setWidgetData] = useState([
     {
-      title: "User Name",
-      subtext: "Bio Text",
-    },
-    {
-      title: "Favorite Music Type",
-      subtext: "Your Favorite Music Type",
-    },
-    {
-      title: "Now Playing",
-      subtext: "What You're Listening To",
-    },
-    {
-      title: "Favorite Songs",
-      subtext: "Your Favorite Songs",
-    },
-    {
-      title: "Favorite Artists",
-      subtext: "Your Favorite Artists",
-    },
+            title: "User Name",
+            subtext: "Bio Text",
+          },
+          {
+            title: "Favorite Music Type",
+            subtext: "Your Favorite Music Type",
+          },
+          {
+            title: "Now Playing",
+            subtext: "What You're Listening To",
+          },
+          {
+            title: "Favorite Songs",
+            subtext: "Your Favorite Songs",
+          },
+          {
+            title: "Favorite Artists",
+            subtext: "Your Favorite Artists",
+          },
   ]);
+
   // States for handling editing functionality
   const [isEditingSubtext, setIsEditingSubtext] = useState(false);
   const [editedSubtext, setEditedSubtext] = useState("");
   const [currentIndex, setCurrentIndex] = useState(-1);
-  // Function to handle toggling subtext editing
+
   const toggleEditSubtext = (subtext, index) => {
-    // If you are currently editing a widget, save the changes
     if (isEditingSubtext) {
       updateSubtext();
     }
@@ -41,6 +39,7 @@ const Profile = () => {
     setCurrentIndex(index);
     setEditedSubtext(subtext);
   };
+
   // Function to update subtext when editing is complete
   const updateSubtext = () => {
     if (currentIndex !== -1) {
@@ -52,7 +51,18 @@ const Profile = () => {
     setIsEditingSubtext(false);
     setCurrentIndex(-1);
   };
-  // Function to dynamically set styles for the "User Name" widget
+
+  const updateNowPlaying = ({ song, artist }) => {
+    const nowPlayingIndex = widgetData.findIndex(
+      (widget) => widget.title === "Now Playing"
+    );
+    if (nowPlayingIndex !== -1) {
+      const updatedWidgetData = [...widgetData];
+      updatedWidgetData[nowPlayingIndex].subtext = `${song} by ${artist}`;
+      setWidgetData(updatedWidgetData);
+    }
+  };
+
   const getUserNameWidgetStyle = (index) => {
     return {
       height: widgetData[index].title === "User Name" ? 212 : 106,
@@ -68,89 +78,133 @@ const Profile = () => {
       borderColor: "white",
     };
   };
-  // Function to render the "User Name" widget
+
   const renderUserNameWidget = (widget, index) => {
     const isUserNameWidget = widget.title === "User Name";
+    const isNowPlayingWidget = widget.title === "Now Playing";
+  
     return (
       <TouchableOpacity
         key={widget.title}
-        onPress={() => toggleEditSubtext(widget.subtext, index)}
+        onPress={() => {
+          if (!isNowPlayingWidget) {
+            toggleEditSubtext(widget.subtext, index);
+          }
+        }}
         style={getUserNameWidgetStyle(index)}
       >
-        {isEditingSubtext && currentIndex === index ? (
-          <>
-            {/* Text input for editing the bio */}
-            <TextInput
-              value={editedSubtext}
-              onChangeText={(text) => setEditedSubtext(text)}
-              onBlur={updateSubtext}
-              placeholder="Type here..."
-              multiline
+        {isNowPlayingWidget ? (
+          // Render the Now Playing widget without editing capability
+          <View style={{ flex: 1 }}>
+            <Text
               style={{
+                color: "#424242",
+                fontSize: 25,
                 marginLeft: "3%",
-                fontSize: 15,
                 fontFamily: "System",
                 fontWeight: "bold",
                 textAlign: "left",
               }}
-            />
-          </>
+            >
+              {widget.title}
+            </Text>
+            <View
+              style={{
+                marginLeft: "3%",
+                marginTop: 10,
+                backgroundColor: "gray",
+                borderRadius: 50,
+              }}
+            ></View>
+            <Text
+              style={{
+                color: "#424242",
+                fontSize: 15,
+                marginLeft: "3%",
+                fontFamily: "System",
+                fontWeight: "bold",
+                textAlign: "left",
+              }}
+            >
+              {widget.subtext}
+            </Text>
+          </View>
         ) : (
+          // Render other widgets with or without editing capability
           <>
-            <View style={{ flex: 1 }}>
-              <Text
+            {isEditingSubtext && currentIndex === index ? (
+              // Text input for editing the bio
+              <TextInput
+                value={editedSubtext}
+                onChangeText={(text) => setEditedSubtext(text)}
+                onBlur={updateSubtext}
+                placeholder="Type here..."
+                multiline
                 style={{
-                  color: "#424242",
-                  fontSize: 25,
                   marginLeft: "3%",
-                  fontFamily: "System",
-                  fontWeight: "bold",
-                  textAlign: "left",
-                }}
-              >
-                {widget.title}
-              </Text>
-              {isUserNameWidget ? (
-                // Styling for the special "User Name" widget
-                <View
-                  style={{
-                    marginLeft: "3%",
-                    marginTop: 10,
-                    width: 75,
-                    height: 75,
-                    backgroundColor: "gray",
-                    borderRadius: 50,
-                  }}
-                ></View>
-              ) : (
-                // Styling for other widgets
-                <View
-                  style={{
-                    width: "100%",
-                    height: 5,
-                    backgroundColor: "#424242",
-                  }}
-                ></View>
-              )}
-              <Text
-                style={{
-                  color: "#424242",
                   fontSize: 15,
-                  marginLeft: "3%",
                   fontFamily: "System",
                   fontWeight: "bold",
                   textAlign: "left",
                 }}
-              >
-                {widget.subtext}
-              </Text>
-            </View>
+              />
+            ) : (
+              // Other widgets with their respective UI
+              <View style={{ flex: 1 }}>
+                <Text
+                  style={{
+                    color: "#424242",
+                    fontSize: 25,
+                    marginLeft: "3%",
+                    fontFamily: "System",
+                    fontWeight: "bold",
+                    textAlign: "left",
+                  }}
+                >
+                  {widget.title}
+                </Text>
+                {isUserNameWidget ? (
+                  // Styling for the special "User Name" widget
+                  <View
+                    style={{
+                      marginLeft: "3%",
+                      marginTop: 10,
+                      width: 75,
+                      height: 75,
+                      backgroundColor: "gray",
+                      borderRadius: 50,
+                    }}
+                  ></View>
+                ) : (
+                  // Styling for other widgets
+                  <View
+                    style={{
+                      width: "100%",
+                      height: 5,
+                      backgroundColor: "#424242",
+                    }}
+                  ></View>
+                )}
+                <Text
+                  style={{
+                    color: "#424242",
+                    fontSize: 15,
+                    marginLeft: "3%",
+                    fontFamily: "System",
+                    fontWeight: "bold",
+                    textAlign: "left",
+                  }}
+                >
+                  {widget.subtext}
+                </Text>
+              </View>
+            )}
           </>
         )}
       </TouchableOpacity>
     );
   };
-  // Render the Profile component
+
   return (
     <SafeAreaView style={{ flexDirection: "row", marginTop: 10 }}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -159,5 +213,5 @@ const Profile = () => {
     </SafeAreaView>
   );
 };
-// Export the Profile component as the default export
+
 export default Profile;
