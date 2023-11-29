@@ -62,6 +62,8 @@ const Profile = () => {
     const [isEditingSubtext, setIsEditingSubtext] = useState(false);
     const [editedSubtext, setEditedSubtext] = useState("");
     const [currentIndex, setCurrentIndex] = useState(-1);
+
+
     // Function to handle toggling subtext editing
     const toggleEditSubtext = (subtext, index) => {
       // If you are currently editing a widget, save the changes

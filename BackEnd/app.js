@@ -14,6 +14,7 @@ var signRouter = require('./routes/signUp');
 var testRouter = require('./routes/testRoute');
 var loginRouter = require('./routes/signIn.js');
 var userRouter = require('./routes/user.js')
+var mapsRouter = require('./routes/mapsRoutes.js')
 var spotifyRouter = require('./routes/spotifyRoutes.js')
 var spotifyAuthRouter = require('./routes/spotifyAuth.js')
 
@@ -42,33 +43,23 @@ app.use('/signUp', signRouter);
 app.use('/testRoute', testRouter);
 app.use('/login', loginRouter);
 app.use('/user', userRouter);
+app.use('/maps', mapsRouter)
 app.use('/spotify', spotifyRouter)
 app.use('/auth', spotifyAuthRouter)
 
 
 
-/**
- * simple middleware to make sure user is logged in.
- * But really, we won't be using this probably 
- */
-// app.user((req, res, next) => {
-//   if (req.session.user) next();
-//   else {
-//     res.send("Please Log In , 401 (unauthorized)")
-//   }
-// })
-
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-  
+
   // render the error page
   res.status(err.status || 500);
   res.render('error');
@@ -76,8 +67,8 @@ app.use(function(err, req, res, next) {
 
 // Cors settings 
 const corsOptions = {
-  origin: '*', 
-  allowedHeaders: 'Content-Type', 
+  origin: '*',
+  allowedHeaders: 'Content-Type',
   credentials: true
 };
 

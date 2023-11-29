@@ -7,6 +7,7 @@ var router = express.Router();
 router.get('/', function (req, res) {
     if (req.session.user) {
         res.send(req.session.user)
+        console.log("Request.Session.User :", req.session.user)
     }
     else{
         res.send(false)

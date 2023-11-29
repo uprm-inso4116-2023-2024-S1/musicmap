@@ -35,7 +35,8 @@ const Sign_up = ({navigation}) => {
       
       // User Succesfully signed up. New User is created
       if (signUpSuccess==true){
-        navigation.navigate('Profile')
+        navigation.navigate('Profile', { username : userName})
+
       }
 
       //Otherwise, send a message indicating a failed login.
